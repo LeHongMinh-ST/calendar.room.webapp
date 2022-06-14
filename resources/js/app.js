@@ -1,6 +1,7 @@
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import router from "./router"
+import store from './store'
 
 require('./bootstrap')
 window.Vue = require('vue').default
@@ -16,5 +17,6 @@ const vuetify = new Vuetify({
 const app = new Vue({
     el: '#app',
     vuetify: vuetify,
-    router
+    router,
+    store
 });

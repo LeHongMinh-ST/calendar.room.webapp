@@ -5,19 +5,19 @@ Vue.use(Router)
 
 const routes = [
     {
-        path: '/home',
-        name: 'Home',
-        component: () => import('../pages/HomePage.vue')
+        path: '/dashboard',
+        name: 'Dashboard',
+        component: () => import('../pages/Dashboard.vue')
     },
     {
         path: '/',
-        redirect: { name: 'Home' }
+        redirect: { name: 'Dashboard' }
     },
     {
-        path: '/about',
-        name: 'About',
-        component: () => import('../pages/AboutPage.vue')
-    },
+        path: '/department',
+        name: 'Department',
+        component: () => import('../pages/Department.vue')
+    }
 ]
 
 const router = new Router({
