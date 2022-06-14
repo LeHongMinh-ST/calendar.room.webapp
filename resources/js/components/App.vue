@@ -1,16 +1,18 @@
 <template>
-  <div class="main mt-4">
-    <div class="row">
-      <div class="col-md-8 offset-2 text-center">
-        <router-view></router-view>
-      </div>
-    </div>
-  </div>
+ <div>
+     <AdminLayout/>
+ </div>
 </template>
 
 <script>
+
+import AdminLayout from "../layouts/AdminLayout";
+
 export default {
-  name: "App"
+    name: "App",
+    components: {
+        AdminLayout
+    }
 }
 </script>
 
