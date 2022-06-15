@@ -135,13 +135,13 @@ export default {
           user_name: this.userName,
           password: this.password,
         }
-
         api.login(data)
-            .then((response) => {
+            .then( async (response) => {
               if (response) {
                 this.updateAccessToken(_.get(response, "data.access_token"));
                 this.updateLoginStatus(true);
-                this.$router.push({name: "Dashboard"});
+                await this.getAuthUser()
+                await this.$router.push({name: "Dashboard"});
               }
             })
             .catch(() => {
@@ -152,6 +152,11 @@ export default {
               }
             });
       }
+    },
+    getAuthUser() {
+      api.getAuthUser().then((res) => {
+        this.updateAuthUser(_.get(res, 'data'))
+      })
     }
   }
 }

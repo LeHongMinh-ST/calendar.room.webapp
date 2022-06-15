@@ -50,6 +50,12 @@ apiAxios.interceptors.response.use(undefined, error => {
 })
 
 export default {
+    getAuthUser() {
+        return apiAxios({
+            method: 'get',
+            url: '/auth/me'
+        })
+    },
     login(data) {
         return apiAxios({
             method: 'post',

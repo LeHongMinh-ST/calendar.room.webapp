@@ -84,7 +84,7 @@
           <v-list-item-subtitle>
             Thời khóa biểu
           </v-list-item-subtitle>
-          <v-list-item link>
+          <v-list-item link >
             <v-list-item-icon>
               <v-icon>
                 {{ icon.mdiCalendarCheck }}
@@ -96,7 +96,7 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item link>
+          <v-list-item link to="/schedules">
             <v-list-item-icon>
               <v-icon>
                 {{ icon.mdiCalendarText }}
@@ -108,7 +108,7 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item link>
+          <v-list-item link to="/calendar">
             <v-list-item-icon>
               <v-icon>
                 {{ icon.mdiCalendarMonth }}
@@ -231,19 +231,21 @@
           </v-avatar>
         </template>
         <v-list>
-          <v-list-item
-              v-for="(item, index) in items"
-              :key="index"
-          >
+          <v-list-item>
             <v-list-item-title>
-              <a href="">{{ item.title }}</a>
+              <span>Thông tin</span>
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="logout">
+            <v-list-item-title>
+              <span> Đăng xuất</span>
             </v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
     </v-app-bar>
 
-    <v-main class="main">
+    <v-main app class="main">
       <router-view/>
     </v-main>
   </v-app>
@@ -268,7 +270,7 @@ import {
   mdiLock,
 } from '@mdi/js'
 
-import {mapState} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 
 export default {
   name: 'AdminLayout',
@@ -296,12 +298,11 @@ export default {
       mdiFileChartOutline,
       mdiLock,
     },
-    items: [
-      {title: 'Thông tin'},
-      {title: 'Đăng xuất'},
 
-    ]
   }),
+  methods: {
+    ...mapActions('auth', ['logout']),
+  }
 }
 </script>
 
@@ -335,5 +336,8 @@ export default {
 a {
   text-decoration: none
 }
-
+.v-navigation-drawer__content::-webkit-scrollbar {
+  width: 6px;
+  background-color: #F5F5F5;
+}
 </style>
