@@ -20,7 +20,7 @@ export default {
     },
     mounted() {
         this.changeTitle('Bảng điều khiển')
-        this.setActiveMenu(1)
+        this.setActiveMenu(0)
     }
 }
 </script>

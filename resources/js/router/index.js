@@ -1,9 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from "../store";
 
 Vue.use(Router)
 
 const routes = [
+    {
+        path: '/login',
+        name: 'Login',
+        component: () => import('../pages/Login.vue')
+    },
     {
         path: '/dashboard',
         name: 'Dashboard',
@@ -26,15 +32,15 @@ const router = new Router({
     routes
 })
 
-// router.beforeEach((to, from, next) => {
-//     if (to.name !== 'Login' && !store.state.auth.isAuthenticated) {
-//         next({ name: 'Login' })
-//     } else if(to.name === 'Login' && store.state.auth.isAuthenticated) {
-//         next({ name: 'Home' })
-//     } else {
-//         next()
-//     }
-//     store.state.home.prevRoute = from
-// })
+router.beforeEach((to, from, next) => {
+    if (to.name !== 'Login' && !store.state.auth.isAuthenticated) {
+        next({ name: 'Login' })
+    } else if(to.name === 'Login' && store.state.auth.isAuthenticated) {
+        next({ name: 'Home' })
+    } else {
+        next()
+    }
+    store.state.home.prevRoute = from
+})
 
 export default router

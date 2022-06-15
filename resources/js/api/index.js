@@ -1,7 +1,7 @@
 import axios from "axios"
 import router from "../router"
 import store from "../store"
-const baseUrl = process.env.APP_URL;
+const baseUrl = process.env.MIX_API_URL;
 
 export const apiAxios = axios.create({
     baseURL: `${baseUrl}/api`,
@@ -48,3 +48,13 @@ apiAxios.interceptors.response.use(undefined, error => {
     }
     return Promise.reject(error)
 })
+
+export default {
+    login(data) {
+        return apiAxios({
+            method: 'post',
+            url: '/auth/login',
+            data: data
+        })
+    },
+}
