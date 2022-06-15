@@ -108,7 +108,6 @@ export default {
     },
   },
   mounted() {
-    console.log(process.env.MIX_API_URL)
   },
   computed: {
     ...mapState("auth", ["isAuthenticated"]),
@@ -136,13 +135,13 @@ export default {
           password: this.password,
         }
         api.login(data)
-            .then( async (response) => {
-              if (response) {
-                this.updateAccessToken(_.get(response, "data.access_token"));
-                this.updateLoginStatus(true);
-                await this.getAuthUser()
-                await this.$router.push({name: "Dashboard"});
-              }
+            .then(  (response) => {
+                if (response) {
+                    this.updateAccessToken(_.get(response, "data.access_token"));
+                     this.updateLoginStatus(true);
+                    // await this.getAuthUser()
+                     this.$router.push({name: "Dashboard"})
+                }
             })
             .catch(() => {
               this.snackbar = {
@@ -155,7 +154,7 @@ export default {
     },
     getAuthUser() {
       api.getAuthUser().then((res) => {
-        this.updateAuthUser(_.get(res, 'data'))
+          this.updateAuthUser(_.get(res, 'data'))
       })
     }
   }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CalendarController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,5 +26,10 @@ Route::group(['prefix' => 'auth'], function () {
 
     Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('me', [AuthController::class, 'me']);
+        Route::get('get-event-calendar', [CalendarController::class, 'getEventCalender']);
     });
 });
+Route::group(['middleware' => ['jwt.auth']], function () {
+    Route::get('get-events-calendar', [CalendarController::class, 'getEventsCalender']);
+});
+
