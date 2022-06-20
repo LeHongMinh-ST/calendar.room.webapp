@@ -20,9 +20,9 @@ const routes = [
         redirect: {name: 'Dashboard'}
     },
     {
-        path: '/department',
-        name: 'Department',
-        component: () => import('../pages/Department.vue')
+        path: '/faculty',
+        name: 'Faculty',
+        component: () => import('../pages/Faculty.vue')
     },
     {
         path: '/calendar',

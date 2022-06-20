@@ -1,6 +1,7 @@
 import axios from "axios"
 import router from "../router"
 import store from "../store"
+
 const baseUrl = process.env.MIX_API_URL;
 
 export const apiAxios = axios.create({
@@ -77,6 +78,20 @@ export default {
             method: 'get',
             url: '/faculty',
             params: params
+        })
+    },
+    createFaculty(data) {
+        return apiAxios({
+            method: 'post',
+            url: '/faculty',
+            data: data
+        })
+    },
+    updateFaculty(data, id) {
+        return apiAxios({
+            method: 'put',
+            url: `/faculty/${id}`,
+            data: data
         })
     }
 }

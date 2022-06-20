@@ -12,7 +12,7 @@ class FacultyRepository extends BaseRepository implements FacultyRepositoryInter
         parent::__construct($model);
     }
 
-    public function getFilters(array $filters)
+    public function getFacultyFilters(array $filters, array $relations = [])
     {
         $this->model = $this->originalModel;
         $paginate = config('constants.limit_of_paginate', 10);
@@ -24,6 +24,7 @@ class FacultyRepository extends BaseRepository implements FacultyRepositoryInter
         return $this->model
             ->search($search)
             ->orderBy($orderBy, $order)
+            ->with($relations)
             ->paginate($paginate);
     }
 

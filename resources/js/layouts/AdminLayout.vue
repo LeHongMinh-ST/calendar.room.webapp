@@ -32,7 +32,7 @@
           <v-list-item-subtitle>
             Quản lý chung
           </v-list-item-subtitle>
-          <v-list-item link to="/department">
+          <v-list-item link to="/faculty">
             <v-list-item-icon>
               <v-icon>
                 {{ icon.mdiBank }}
