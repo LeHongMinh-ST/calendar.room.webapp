@@ -63,7 +63,7 @@ export default {
             data: data
         })
     },
-    getEventsCalendar(params) {
+    getEventsCalendar(params = null) {
         return apiAxios({
             method: 'get',
             url: '/get-events-calendar',

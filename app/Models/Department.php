@@ -8,14 +8,22 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Department extends Model
 {
     use SoftDeletes;
-    protected $fillable = ['id','department_id','name','user_create_id','user_update_id','created_at','deleted_at'];
 
-    public function Subjects()
+    protected $fillable = [
+        'department_id',
+        'name',
+        'user_create_id',
+        'user_update_id',
+        'created_at',
+        'deleted_at'
+    ];
+
+    public function Subjects(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Subject::class);
     }
 
-    public function Users()
+    public function Users(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(User::class);
     }

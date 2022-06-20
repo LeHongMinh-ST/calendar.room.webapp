@@ -110,7 +110,7 @@ export default {
   mounted() {
   },
   computed: {
-    ...mapState("auth", ["isAuthenticated"]),
+    ...mapState("auth", ["isAuthenticated", "authUser"]),
     userNameErrors() {
       const errors = []
       if (!this.$v.userName.$dirty) return errors
@@ -135,13 +135,23 @@ export default {
           password: this.password,
         }
         api.login(data)
-            .then(  (response) => {
-                if (response) {
-                    this.updateAccessToken(_.get(response, "data.access_token"));
-                     this.updateLoginStatus(true);
-                    // await this.getAuthUser()
-                     this.$router.push({name: "Dashboard"})
-                }
+            .then(async (response) => {
+              if (response) {
+                this.updateAccessToken(_.get(response, "data.access_token"));
+                this.updateLoginStatus(true);
+
+                await this.getAuthUser().then((auth) => {
+
+
+                  if (_.get(auth, 'role_id') === 0) {
+                    this.$router.push({name: 'Calendar'})
+                  }
+
+                  if (_.get(auth, 'role_id') === 1) {
+                    this.$router.push({name: 'Dashboard'})
+                  }
+                })
+              }
             })
             .catch(() => {
               this.snackbar = {
@@ -152,10 +162,13 @@ export default {
             });
       }
     },
-    getAuthUser() {
-      api.getAuthUser().then((res) => {
-          this.updateAuthUser(_.get(res, 'data'))
+    async getAuthUser() {
+      let auth = {}
+      await api.getAuthUser().then((res) => {
+        this.updateAuthUser(_.get(res, 'data'))
+        auth = _.get(res, 'data');
       })
+      return auth
     }
   }
 }

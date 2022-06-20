@@ -11,15 +11,16 @@ use App\Models\User;
 use App\Models\Week;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class CalendarController extends Controller
 {
     use ResponseTrait;
 
-    public function getEventsCalender(Request $request)
+    public function getEventsCalender(Request $request): JsonResponse
     {
-        $semesterId = $request->input('semester_id');
-        $roomId = $request->input('room_id');
+        $semesterId = $request->input('semesterId');
+        $roomId = $request->input('roomId');
 
         if (!$semesterId) {
             $semesterId = $this->getSemesterNow()->id;
@@ -39,8 +40,7 @@ class CalendarController extends Controller
         $events = [];
         foreach ($weeks as $week) {
             $events[] = [
-                'title' => 'Tuần ' . $week->week,
-                'allDay' => true,
+                'name' => 'Tuần ' . $week->week,
                 'start' => $week->start_day,
             ];
         }
@@ -70,8 +70,8 @@ class CalendarController extends Controller
                 $event['title'] = $event['subject'] . "\nGv: " . $event['teacher_name'] . "\nLớp: " . $event['class'] .
                     "\nTiết " . $schedule['session'] . "-" . ($schedule['session'] + $schedule['number_session'] - 1);
                 $datetime = $this->timeEvent($schedule, $arrayWeek);
-                $event['startTime'] = $datetime['time_start'];
-                $event['endTime'] = $datetime['time_end'];
+                $event['start'] = $datetime['time_start'];
+                $event['end'] = $datetime['time_end'];
                 $event['startRecur'] = $datetime['date_start'];
                 $event['endRecur'] = $datetime['date_end'];
                 if ($schedule['day'] == 8)
@@ -85,7 +85,7 @@ class CalendarController extends Controller
         }
 
         return $this->responseSuccess([
-            'data' => $events
+            'events' => $events
         ]);
     }
 

@@ -45,7 +45,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
     if (to.name !== 'Login' && !store.state.auth.isAuthenticated) {
         next({name: 'Login'})
-    } else if (to.name !== 'Login' && store.state.auth.isAuthenticated && store.state.auth.authUser.role_id !== 1) {
+    } else if (to.name === 'Login' && store.state.auth.isAuthenticated && store.state.auth.authUser.role_id !== 1) {
         next({name: 'Calendar'})
     } else if (to.name === 'Login' && store.state.auth.isAuthenticated && store.state.auth.authUser.role_id === 1) {
         next({name: 'Dashboard'})

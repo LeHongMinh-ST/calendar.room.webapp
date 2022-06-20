@@ -84,6 +84,7 @@
                 first-time="06:00"
                 interval-count="15"
                 @click:time="clickTime"
+                @click:event="clickEvent"
                 @change="changeCalendar"
             />
 
@@ -100,6 +101,8 @@
 import {mapMutations} from "vuex"
 import moment from 'moment'
 import {mdiChevronLeft, mdiChevronRight} from '@mdi/js'
+import api from '../api'
+import _ from 'lodash'
 
 export default {
   name: "Calendar",
@@ -110,22 +113,9 @@ export default {
     },
     today: moment().format('YYYY-MM-DD'),
     titleCalendar: '',
-    events: [
-      {
-        name: 'Weekly Meeting',
-        start: '2022-01-07 09:00',
-        end: '2022-01-07 10:00',
-      },
-      {
-        name: `Thomas' Birthday`,
-        start: '2022-01-10',
-      },
-      {
-        name: 'Mash Potatoes',
-        start: '2022-01-09 12:30',
-        end: '2022-01-09 15:30',
-      },
-    ],
+    roomId: '',
+    semesterId: '',
+    events: [],
   }),
   methods: {
     ...mapMutations('home', [
@@ -135,11 +125,13 @@ export default {
     clickTime(event) {
       console.log(event)
     },
+    clickEvent(event) {
+      console.log(event)
+    },
     setToday() {
       this.today = moment().format('YYYY-MM-DD')
     },
     prev() {
-      console.log(this.$refs.calendar.prev())
       this.$refs.calendar.prev()
     },
     next() {
@@ -150,12 +142,24 @@ export default {
     },
     changeCalendar() {
       this.setTitleCalendar(this.$refs.calendar.title)
+    },
+    getScheduleCalendar(roomId = null, semesterId = null) {
+      let params = {
+        room_id: roomId,
+        semester_id: semesterId
+      }
+      api.getEventsCalendar(params).then((res) => {
+        if (res) {
+          this.events = _.get(res,'data.data.events', [])
+        }
+      })
     }
   },
   mounted() {
     this.setTitleCalendar(this.$refs.calendar.title)
     this.changeTitle('Thời khoá biểu')
     this.setActiveMenu(7)
+    this.getScheduleCalendar()
   },
   computed: {}
 }
