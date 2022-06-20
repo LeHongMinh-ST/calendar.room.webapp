@@ -1,7 +1,6 @@
 <template>
   <v-container class="py-8 px-6" fluid>
     <div>
-
       <v-card>
         <div class="calendarWrapper p-2 pt-5">
           <v-row>
@@ -86,7 +85,22 @@
                 @click:time="clickTime"
                 @click:event="clickEvent"
                 @change="changeCalendar"
-            />
+            >
+                <template #event="event">
+                    <div :class="{ 'eventWrapper': !getValue(event, 'event.isEventWeek', false)}">
+                        <strong>{{ getValue(event, 'event.name', '') }}</strong>
+                        <span></span>
+                        <br>
+                        <strong>GV: {{ getValue(event, 'event.teacher_name', '') }}</strong>
+                        <br>
+                        <strong>Lớp: {{ getValue(event, 'event.class', '') }}</strong>
+                        <br>
+                        <strong>Tiết: {{ getValue(event, 'event.session', '') }}</strong>
+                        <br>
+                        {{ event.timeSummary() }}
+                    </div>
+                </template>
+            </v-calendar>
 
           </v-sheet>
         </div>
@@ -107,53 +121,59 @@ import _ from 'lodash'
 export default {
   name: "Calendar",
   data: () => ({
-    icon: {
-      mdiChevronLeft,
-      mdiChevronRight
-    },
-    today: moment().format('YYYY-MM-DD'),
-    titleCalendar: '',
-    roomId: '',
-    semesterId: '',
-    events: [],
+      icon: {
+          mdiChevronLeft,
+          mdiChevronRight
+      },
+      today: moment().format('YYYY-MM-DD'),
+      titleCalendar: '',
+      roomId: '',
+      semesterId: '',
+      events: [],
   }),
   methods: {
-    ...mapMutations('home', [
-      'changeTitle',
-      'setActiveMenu'
-    ]),
-    clickTime(event) {
-      console.log(event)
-    },
-    clickEvent(event) {
-      console.log(event)
-    },
-    setToday() {
-      this.today = moment().format('YYYY-MM-DD')
-    },
-    prev() {
-      this.$refs.calendar.prev()
-    },
-    next() {
-      this.$refs.calendar.next()
-    },
-    setTitleCalendar(title) {
-      this.titleCalendar = title
-    },
-    changeCalendar() {
-      this.setTitleCalendar(this.$refs.calendar.title)
-    },
-    getScheduleCalendar(roomId = null, semesterId = null) {
-      let params = {
-        room_id: roomId,
-        semester_id: semesterId
+      ...mapMutations('home', [
+          'changeTitle',
+          'setActiveMenu',
+          'setLoader'
+      ]),
+      getValue(res, data = '', df = undefined) {
+          return _.get(res, data, df)
+      },
+      clickTime(event) {
+          console.log(event)
+      },
+      clickEvent(event) {
+          console.log(event)
+      },
+      setToday() {
+          this.today = moment().format('YYYY-MM-DD')
+      },
+      prev() {
+          this.$refs.calendar.prev()
+      },
+      next() {
+          this.$refs.calendar.next()
+      },
+      setTitleCalendar(title) {
+          this.titleCalendar = title
+      },
+      changeCalendar() {
+          this.setTitleCalendar(this.$refs.calendar.title)
+      },
+      getScheduleCalendar(roomId = null, semesterId = null) {
+          this.setLoader(true)
+          let params = {
+              room_id: roomId,
+              semester_id: semesterId
+          }
+          api.getEventsCalendar(params).then((res) => {
+              if (res) {
+                  this.events = _.get(res, 'data.data.events', [])
+              }
+              this.setLoader(false)
+          })
       }
-      api.getEventsCalendar(params).then((res) => {
-        if (res) {
-          this.events = _.get(res,'data.data.events', [])
-        }
-      })
-    }
   },
   mounted() {
     this.setTitleCalendar(this.$refs.calendar.title)
@@ -167,9 +187,13 @@ export default {
 
 <style scoped lang="scss">
 .calendarWrapper {
-  .subTitle {
-    color: #6c757d;
-  }
+    .subTitle {
+        color: #6c757d;
+    }
+
+    .eventWrapper {
+        padding: 5px;
+    }
 }
 
 

@@ -25,7 +25,6 @@ class FacultyRepository extends BaseRepository implements FacultyRepositoryInter
             ->search($search)
             ->orderBy($orderBy, $order)
             ->paginate($paginate);
-
     }
 
     public function create(array $payload)

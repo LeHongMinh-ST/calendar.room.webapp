@@ -10,8 +10,9 @@ use App\Models\Subject;
 use App\Models\User;
 use App\Models\Week;
 use App\Traits\ResponseTrait;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class CalendarController extends Controller
 {
@@ -42,6 +43,7 @@ class CalendarController extends Controller
             $events[] = [
                 'name' => 'Tuần ' . $week->week,
                 'start' => $week->start_day,
+                'isEventWeek' => true
             ];
         }
         $subjects = Subject::query()->get();
@@ -52,35 +54,35 @@ class CalendarController extends Controller
             $arrayWeeks = $this->getChildArray($arrayWeeks);
 
             $teacher = User::query()->where(['user_name' => $schedule['teacher_id']])->first();
-
             foreach ($arrayWeeks as $arrayWeek) {
-                //Lấy các thông tin cho lớp học
-                $event['group'] = $schedule['subject_group'];
-                $event['class'] = $schedule['class'];
-                $event['amount_people'] = $schedule['amount_people'];
-                $event['teacher_id'] = $schedule['teacher_id'];
-                $event['teacher_name'] = $teacher ? $teacher['full_name'] : 'Chưa rõ';
-                $event['subject'] = $this->filterArray($subjects, $schedule['subject_id'])['name'];
+                foreach ($arrayWeek as $week) {
+                    //Lấy các thông tin cho lớp học
+                    $event['group'] = $schedule['subject_group'];
+                    $event['class'] = $schedule['class'];
+                    $event['amount_people'] = $schedule['amount_people'];
+                    $event['teacher_id'] = $schedule['teacher_id'];
+                    $event['teacher_name'] = $teacher ? $teacher['full_name'] : 'Chưa rõ';
+                    $event['subject'] = $this->filterArray($subjects, $schedule['subject_id'])['name'];
 
-                $listWeek = explode(',', $schedule['week_check']);
-                $event['weeks'] = implode(', ',$listWeek);
-                $event['room_id'] = $roomId;
-                $event['subject_id'] = $this->filterArray($subjects, $schedule['subject_id'])['subject_id'];
+                    $listWeek = explode(',', $schedule['week_check']);
+                    $event['weeks'] = implode(', ', $listWeek);
+                    $event['room_id'] = $roomId;
+                    $event['subject_id'] = $this->filterArray($subjects, $schedule['subject_id'])['subject_id'];
+                    $event['session'] = $schedule['session'] . "-" . ($schedule['session'] + $schedule['number_session'] - 1);
 
-                $event['title'] = $event['subject'] . "\nGv: " . $event['teacher_name'] . "\nLớp: " . $event['class'] .
-                    "\nTiết " . $schedule['session'] . "-" . ($schedule['session'] + $schedule['number_session'] - 1);
-                $datetime = $this->timeEvent($schedule, $arrayWeek);
-                $event['start'] = $datetime['time_start'];
-                $event['end'] = $datetime['time_end'];
-                $event['startRecur'] = $datetime['date_start'];
-                $event['endRecur'] = $datetime['date_end'];
-                if ($schedule['day'] == 8)
-                    $event['daysOfWeek'] = [0];
-                else
-                    $event['daysOfWeek'] = [$schedule['day'] - 1];
-                $event['color'] = ($schedule['status'] == 1) ? '#4285f4' : '#F6BF26';
-                $event['schedule'] = $schedule;
-                $events[] = $event;
+                    $event['name'] = $event['subject'];
+                    $event['color'] = ($schedule['status'] == 1) ? '#4285f4' : '#F6BF26';
+
+                    $datetime = $this->timeEvent($schedule, $week);
+                    $event['start'] = $datetime['start'];
+                    $event['end'] = $datetime['end'];
+                    if ($schedule['day'] == 8)
+                        $event['daysOfWeek'] = [0];
+                    else
+                        $event['daysOfWeek'] = [$schedule['day'] - 1];
+                    $event['schedule'] = $schedule;
+                    $events[] = $event;
+                }
             }
         }
 
@@ -131,38 +133,21 @@ class CalendarController extends Controller
 
     public function timeEvent($schedule, $dataWeek): array
     {
-        //Lấy ra tuần bắt đầu
-        $start = reset($dataWeek) != "" ? reset($dataWeek) : "1";
-        $weekStart = Week::query()
+        $week = Week::query()
             ->where('semester_id', $schedule['semester_id'])
-            ->where('week', $start)
+            ->where('week', $dataWeek)
             ->first();
-        if ($weekStart)
-            $weekStart = $weekStart->toArray();
-
-        end($dataWeek);
-        $end = current($dataWeek) != "" ? current($dataWeek) : "1";
-        $weekEnd = Week::query()
-            ->where('semester_id', $schedule['semester_id'])
-            ->where('week', $end)
-            ->first();
-
-        if ($weekEnd)
-            $weekEnd = $weekEnd->toArray();
 
         //Lấy ra ngày bắt đầu môn học
-        if($schedule)
+        if ($schedule)
             $day = $schedule['day'] - 2;
-        $datetime['date_start'] = date('Y-m-d', strtotime($weekStart['start_day'] . ' + ' . $day . ' days'));
-        if ($schedule['day'] == 8)
-            $datetime['date_end'] = date('Y-m-d', strtotime($weekEnd['end_day'] . ' + 7 days'));
-        else
-            $datetime['date_end'] = date('Y-m-d', strtotime($weekEnd['end_day']));
-
+        $date = Carbon::make($week['start_day'])->addDays($day)->format('Y-m-d');
         //Lấy ra thời gian bắt đầu và thời gian kết thúc
-        $datetime['time_start'] = config('settime.' . $schedule['session'])['start'];
-        $datetime['time_end'] = config('settime.' . ($schedule['session'] + $schedule['number_session'] - 1))['end'];
-
+        $setTime = config('settime');
+        $startTime = $setTime[$schedule['session']]['start'];
+        $endTime = $setTime[$schedule['session'] + $schedule['number_session'] - 1]['end'];
+        $datetime['start'] = $date . ' ' . $startTime;
+        $datetime['end'] = $date . ' ' . $endTime;
         return $datetime;
     }
 }

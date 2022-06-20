@@ -126,40 +126,41 @@ export default {
   },
 
   methods: {
-    ...mapMutations("auth", ["updateLoginStatus", "updateAccessToken", "updateAuthUser"]),
-    handleLogin() {
-      this.$v.$touch()
-      if (!this.$v.$invalid) {
-        let data = {
-          user_name: this.userName,
-          password: this.password,
-        }
-        api.login(data)
-            .then(async (response) => {
-              if (response) {
-                this.updateAccessToken(_.get(response, "data.access_token"));
-                this.updateLoginStatus(true);
-
-                await this.getAuthUser().then((auth) => {
-
-
-                  if (_.get(auth, 'role_id') === 0) {
-                    this.$router.push({name: 'Calendar'})
-                  }
-
-                  if (_.get(auth, 'role_id') === 1) {
-                    this.$router.push({name: 'Dashboard'})
-                  }
-                })
+      ...mapMutations("auth", ["updateLoginStatus", "updateAccessToken", "updateAuthUser"]),
+      ...mapMutations("home", ["setLoader"]),
+      handleLogin() {
+          this.$v.$touch()
+          if (!this.$v.$invalid) {
+              this.setLoader(true)
+              let data = {
+                  user_name: this.userName,
+                  password: this.password,
               }
-            })
-            .catch(() => {
-              this.snackbar = {
-                message: "Thông tin tài khoản hoặc mật khẩu không chính xác",
-                color: "error",
-                isShow: true,
-              }
-            });
+              api.login(data).then(async (response) => {
+                  if (response) {
+                      this.updateAccessToken(_.get(response, "data.access_token"));
+                      this.updateLoginStatus(true);
+
+                      await this.getAuthUser().then((auth) => {
+                          this.setLoader(false)
+                          if (_.get(auth, 'role_id') === 0) {
+                              this.$router.push({name: 'Calendar'})
+                          }
+
+                          if (_.get(auth, 'role_id') === 1) {
+                              this.$router.push({name: 'Dashboard'})
+                          }
+                      })
+                  }
+                  this.setLoader(false)
+              }).catch(() => {
+                  this.snackbar = {
+                      message: "Thông tin tài khoản hoặc mật khẩu không chính xác",
+                      color: "error",
+                      isShow: true,
+                  }
+                  this.setLoader(false)
+              });
       }
     },
     async getAuthUser() {

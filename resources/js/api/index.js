@@ -69,5 +69,14 @@ export default {
             url: '/get-events-calendar',
             params: params
         })
+    },
+
+    //faculty
+    getFaculties(params = null) {
+        return apiAxios({
+            method: 'get',
+            url: '/faculty',
+            params: params
+        })
     }
 }
