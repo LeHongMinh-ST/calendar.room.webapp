@@ -629,15 +629,13 @@ export default {
           if (res) {
             this.handleGetFaculties()
             this.dialogCreate = false
+            this.showMessage('success', 'Tạo mới thành công')
           }
         }).catch(error => {
           let errors = _.get(error.response, 'data.error', {})
           if (Object.keys(errors).length === 0) {
-            this.snackbar = {
-              message: _.get(error.response, 'data.message', ''),
-              color: "error",
-              isShow: true,
-            }
+            let message = _.get(error.response, 'data.message', '')
+            this.showMessage('error', message)
           }
           if (Object.keys(errors).length > 0) {
             this.serveError.name = _.get(errors, 'name[0]', '')
@@ -662,15 +660,13 @@ export default {
           if (res) {
             this.handleGetFaculties()
             this.dialogUpdate = false
+            this.showMessage('success', 'Tạo mới thành công')
           }
         }).catch(error => {
           let errors = _.get(error.response, 'data.error', {})
           if (Object.keys(errors).length === 0) {
-            this.snackbar = {
-              message: _.get(error.response, 'data.message', ''),
-              color: "error",
-              isShow: true,
-            }
+            let message = _.get(error.response, 'data.message', '')
+            this.showMessage('error', message)
           }
           if (Object.keys(errors).length > 0) {
             this.serveError.name = _.get(errors, 'name[0]', '')
@@ -685,14 +681,12 @@ export default {
       api.deleteFaculty(this.selectId).then(() => {
         this.handleGetFaculties()
         this.dialogDelete = false
+        this.showMessage('success', 'Tạo mới thành công')
       }).catch(error => {
         let errors = _.get(error.response, 'data.error', {})
         if (Object.keys(errors).length === 0) {
-          this.snackbar = {
-            message: _.get(error.response, 'data.message', ''),
-            color: "error",
-            isShow: true,
-          }
+          let message = _.get(error.response, 'data.message', '')
+          this.showMessage('error', message)
         }
         this.setLoader(false)
       })
@@ -716,7 +710,6 @@ export default {
       this.resetForm()
       this.dialogCreate = true
     },
-
     openDialogUpdate(item) {
       this.resetForm()
       this.name = _.get(item, 'name', '')
@@ -738,6 +731,13 @@ export default {
       this.resetForm()
       this.selectId = _.get(item, 'id', '')
       this.dialogDelete = true
+    },
+    showMessage(type, message) {
+      this.snackbar = {
+        message: message,
+        color: type,
+        isShow: true,
+      }
     }
   },
   mounted() {
