@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
@@ -30,8 +31,10 @@ Route::group(['prefix' => 'auth'], function () {
         Route::get('get-event-calendar', [CalendarController::class, 'getEventCalender']);
     });
 });
+
+Route::get('get-events-calendar', [CalendarController::class, 'getEventsCalender']);
+
 Route::group(['middleware' => ['jwt.auth']], function () {
-    Route::get('get-events-calendar', [CalendarController::class, 'getEventsCalender']);
 
     Route::prefix('faculty')->name('faculty.')->group(function () {
         Route::get('/', [FacultyController::class, 'index']);

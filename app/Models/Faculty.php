@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Faculty extends Model
 {
-    use SoftDeletes;
+//    use SoftDeletes;
 
     const IS_ACTIVE = [
         'active' => 1,

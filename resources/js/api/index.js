@@ -43,7 +43,7 @@ apiAxios.interceptors.response.use(undefined, error => {
                 error.response.data.error.error_permission &&
                 error.response.data.error.error_permission.length > 0
             ) {
-                return router.push({ name: 'Home', params: { errorPermission: "true" } });
+                return router.push({name: 'Home', params: {errorPermission: "true"}});
             }
         }
     }
@@ -92,6 +92,12 @@ export default {
             method: 'put',
             url: `/faculty/${id}`,
             data: data
+        })
+    },
+    deleteFaculty(id) {
+        return apiAxios({
+            method: 'delete',
+            url: `/faculty/${id}`,
         })
     }
 }
