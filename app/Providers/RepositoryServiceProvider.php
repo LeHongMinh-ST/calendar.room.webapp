@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Repositories\Base\BaseRepository;
 use App\Repositories\Base\BaseRepositoryInterface;
+use App\Repositories\Department\DepartmentRepository;
+use App\Repositories\Department\DepartmentRepositoryInterface;
 use App\Repositories\Faculty\FacultyRepository;
 use App\Repositories\Faculty\FacultyRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
@@ -19,6 +21,7 @@ class RepositoryServiceProvider extends ServiceProvider
     {
         $this->app->bind(BaseRepositoryInterface::class, BaseRepository::class);
         $this->app->bind(FacultyRepositoryInterface::class, FacultyRepository::class);
+        $this->app->bind(DepartmentRepositoryInterface::class, DepartmentRepository::class);
     }
 
     /**

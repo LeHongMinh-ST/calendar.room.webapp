@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CalendarController;
 use App\Http\Controllers\Api\FacultyController;
+use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -40,8 +41,15 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('/', [FacultyController::class, 'index']);
         Route::post('/', [FacultyController::class, 'store']);
         Route::put('/{id}', [FacultyController::class, 'update']);
-        Route::get('/{id}', [FacultyController::class, 'show']);
         Route::delete('/{id}', [FacultyController::class, 'destroy']);
+    });
+
+    Route::prefix('department')->name('department.')->group(function () {
+        Route::get('/', [DepartmentController::class, 'index']);
+        Route::get('/get-by-faculty/{facultyId}', [DepartmentController::class, 'getListByFacultyId']);
+        Route::post('/', [DepartmentController::class, 'store']);
+        Route::put('/{id}', [DepartmentController::class, 'update']);
+        Route::delete('/{id}', [DepartmentController::class, 'destroy']);
     });
 });
 

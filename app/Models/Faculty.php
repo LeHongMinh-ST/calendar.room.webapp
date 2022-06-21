@@ -21,9 +21,6 @@ class Faculty extends Model
         'user_create_id',
         'user_update_id',
         'is_active',
-        'updated_at',
-        'created_at',
-        'deleted_at'
     ];
 
     public function departments(): HasMany

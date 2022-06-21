@@ -99,5 +99,13 @@ export default {
             method: 'delete',
             url: `/faculty/${id}`,
         })
+    },
+
+    //department
+    getDepartmentByFaculty(facultyId){
+        return apiAxios({
+            method: 'get',
+            url: `/department/get-by-faculty/${facultyId}`,
+        })
     }
 }

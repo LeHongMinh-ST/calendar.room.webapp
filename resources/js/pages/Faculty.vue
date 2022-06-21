@@ -446,7 +446,7 @@
 
           <v-card-text>
             <div class="font-weight-bold">
-                Bạn chắc chắn muốn xoá bản ghi? Dữ liệu không thể phục hồi!
+              Bạn chắc chắn muốn xoá bản ghi? Dữ liệu không thể phục hồi!
             </div>
           </v-card-text>
 
@@ -590,6 +590,28 @@ export default {
         this.setLoader(false)
       })
     },
+    handleGetDepartmentByFaculty(facultyId) {
+      if (facultyId) {
+        this.setLoader(true)
+        api.getDepartmentByFaculty(facultyId).then(res => {
+          if (res) {
+            this.departments = _.get(res, 'data.data.departments.data', [])
+          }
+          this.setLoader(false)
+        }).catch(error => {
+          let errors = _.get(error.response, 'data.error', {})
+          if (Object.keys(errors).length === 0) {
+            this.snackbar = {
+              message: _.get(error.response, 'data.message', ''),
+              color: "error",
+              isShow: true,
+            }
+          }
+          this.setLoader(false)
+
+        })
+      }
+    },
     handleClearSearch() {
       this.search = ""
       this.handleGetFaculties()
@@ -609,7 +631,6 @@ export default {
             this.dialogCreate = false
           }
         }).catch(error => {
-          this.setLoader(false)
           let errors = _.get(error.response, 'data.error', {})
           if (Object.keys(errors).length === 0) {
             this.snackbar = {
@@ -622,6 +643,8 @@ export default {
             this.serveError.name = _.get(errors, 'name[0]', '')
             this.serveError.facultyId = _.get(errors, 'faculty_id[0]', '')
           }
+          this.setLoader(false)
+
         })
       }
     },
@@ -702,13 +725,13 @@ export default {
       this.isActive = _.get(item, 'is_active', '')
       this.dialogUpdate = true
     },
-    openDialogShow(item) {
+    async openDialogShow(item) {
       this.resetForm()
       this.name = _.get(item, 'name', '')
       this.facultyId = _.get(item, 'faculty_id', '')
       this.selectId = _.get(item, 'id', '')
       this.isActive = _.get(item, 'is_active', false)
-      this.departments = _.get(item, 'departments', [])
+      await this.handleGetDepartmentByFaculty(_.get(item, 'id', ''))
       this.dialogShow = true
     },
     openDialogDelete(item) {
