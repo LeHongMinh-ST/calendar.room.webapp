@@ -88,17 +88,17 @@
                 {{ getValue(item, 'faculty_id', '') }}
               </td>
               <td>
-                                <span class="nameFaculty" @click="openDialogShow(item)">
-                                    {{ getValue(item, 'name', '') }}
-                                </span>
+                <span class="nameFaculty" @click="openDialogShow(item)">
+                    {{ getValue(item, 'name', '') }}
+                </span>
               </td>
               <td class="text-center">
-                                <span
-                                    :class="{ facultyActive: getValue(item, 'is_active', false) }"
-                                    class="facultyStatus font-weight-bold"
-                                >
-                                    {{ getValue(item, 'is_active', false) ? 'Hoạt động' : 'Ẩn' }}
-                                </span>
+                  <span
+                      :class="{ facultyActive:getValue(item, 'is_active', false) }"
+                      class="facultyStatus font-weight-bold"
+                  >
+                      {{ getValue(item, 'is_active', false) ? 'Hoạt động' : 'Ẩn' }}
+                  </span>
               </td>
               <td class="text-center">
                 <v-menu offset-y>
@@ -472,6 +472,26 @@
         </v-card>
       </v-dialog>
     </div>
+    <v-snackbar
+        :value="snackbar.isShow"
+        :timeout="2000"
+        absolute
+        top
+        :color="snackbar.color"
+        right
+    >
+      {{ snackbar.message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+            color="white"
+            text
+            v-bind="attrs"
+            @click="snackbar.isShow = false"
+        >
+          X
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -524,7 +544,12 @@ export default {
       name: '',
       facultyId: ''
     },
-    departments: []
+    departments: [],
+    snackbar: {
+      isShow: false,
+      color: 'success',
+      message: '',
+    }
   }),
   validations: {
     name: {
@@ -582,11 +607,7 @@ export default {
         this.page.perPage = _.get(res, 'data.data.faculties.per_page', 0)
         this.setLoader(false)
       }).catch(() => {
-        this.snackbar = {
-          message: "Lỗi! không tải được dữ liệu",
-          color: "error",
-          isShow: true,
-        }
+        this.showMessage('error', 'Không tải được dữ liệu')
         this.setLoader(false)
       })
     },
@@ -601,11 +622,8 @@ export default {
         }).catch(error => {
           let errors = _.get(error.response, 'data.error', {})
           if (Object.keys(errors).length === 0) {
-            this.snackbar = {
-              message: _.get(error.response, 'data.message', ''),
-              color: "error",
-              isShow: true,
-            }
+            let message = _.get(error.response, 'data.message', '')
+            this.showMessage('error', message)
           }
           this.setLoader(false)
 
@@ -650,6 +668,7 @@ export default {
       this.$v.$touch()
       if (!this.$v.$invalid) {
         this.setLoader(true)
+
         let payload = {
           faculty_id: this.facultyId,
           name: this.name,
