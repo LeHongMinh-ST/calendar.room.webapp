@@ -176,30 +176,28 @@
           </v-card-title>
 
           <v-card-text>
-            <v-text-field
-                v-model="facultyId"
-                :error-messages="facultyIdErrors"
-                label="Mã khoa"
-                outlined
-                dense
-                color="blue"
-                autocomplete="false"
-                class="mt-5"
-                @input="$v.facultyId.$touch()"
-                @blur="$v.facultyId.$touch()"
-            />
-            <v-text-field
-                v-model="name"
-                :error-messages="nameErrors"
-                label="Tên khoa"
-                outlined
-                dense
-                color="blue"
-                autocomplete="false"
-                class="mt-2"
-                @input="$v.name.$touch()"
-                @blur="$v.name.$touch()"
-            />
+              <label><span class="font-weight-bold">Mã khoa <span class="required">*</span>:</span></label>
+              <v-text-field
+                  v-model="facultyId"
+                  :error-messages="facultyIdErrors"
+                  outlined
+                  dense
+                  color="blue"
+                  class="mt-2"
+                  @input="$v.facultyId.$touch()"
+                  @blur="$v.facultyId.$touch()"
+              />
+              <label><span class="font-weight-bold">Tên khoa<span class="required">*</span>:</span></label>
+              <v-text-field
+                  v-model="name"
+                  :error-messages="nameErrors"
+                  outlined
+                  dense
+                  color="blue"
+                  class="mt-2"
+                  @input="$v.name.$touch()"
+                  @blur="$v.name.$touch()"
+              />
           </v-card-text>
 
           <v-divider></v-divider>
@@ -222,50 +220,48 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog
-          v-model="dialogUpdate"
-          width="500"
-      >
-        <v-card>
-          <v-card-title class="text-h5 lighten-2">
-            Chỉnh sửa khoa
-          </v-card-title>
+        <v-dialog
+            v-model="dialogUpdate"
+            width="500"
+        >
+            <v-card>
+                <v-card-title class="text-h5 lighten-2">
+                    Chỉnh sửa khoa
+                </v-card-title>
 
-          <v-card-text>
-            <v-text-field
-                v-model="facultyId"
-                :error-messages="facultyIdErrors"
-                label="Mã khoa"
-                outlined
-                dense
-                color="blue"
-                autocomplete="false"
-                class="mt-5"
-                @input="$v.facultyId.$touch()"
-                @blur="$v.facultyId.$touch()"
-            />
-            <v-text-field
-                v-model="name"
-                :error-messages="nameErrors"
-                label="Tên khoa"
-                outlined
-                dense
-                color="blue"
-                autocomplete="false"
-                class="mt-2"
-                @input="$v.name.$touch()"
-                @blur="$v.name.$touch()"
-            />
+                <v-card-text>
+                    <label><span class="font-weight-bold">Mã khoa <span class="required">*</span>:</span></label>
+                    <v-text-field
+                        v-model="facultyId"
+                        :error-messages="facultyIdErrors"
+                        outlined
+                        dense
+                        color="blue"
+                        class="mt-2"
+                        @input="$v.facultyId.$touch()"
+                        @blur="$v.facultyId.$touch()"
+                    />
+                    <label><span class="font-weight-bold">Tên khoa<span class="required">*</span>:</span></label>
+                    <v-text-field
+                        v-model="name"
+                        :error-messages="nameErrors"
+                        outlined
+                        dense
+                        color="blue"
+                        class="mt-2"
+                        @input="$v.name.$touch()"
+                        @blur="$v.name.$touch()"
+                    />
 
-            <v-switch
-                v-model="isActive"
-                inset
-                color="success"
-                :label="`${isActive ? 'Hoạt động' : 'Ẩn'}`"
-            ></v-switch>
-          </v-card-text>
+                    <v-switch
+                        v-model="isActive"
+                        inset
+                        color="success"
+                        :label="`${isActive ? 'Hoạt động' : 'Ẩn'}`"
+                    ></v-switch>
+                </v-card-text>
 
-          <v-divider></v-divider>
+                <v-divider></v-divider>
 
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -321,7 +317,7 @@
             <v-spacer></v-spacer>
             <v-btn
                 color="red"
-                text
+                dark
                 @click="dialogShow = false"
             >
               Đóng
@@ -544,32 +540,30 @@ export default {
     handleUpdateFaculty() {
       this.$v.$touch()
       if (!this.$v.$invalid) {
-        this.setLoader(true)
+          this.setLoader(true)
 
-        let payload = {
-          faculty_id: this.facultyId,
-          name: this.name,
-          is_active: this.isActive
-        }
+          let payload = {
+              faculty_id: this.facultyId,
+              name: this.name,
+              is_active: this.isActive
+          }
 
-        api.updateFaculty(payload, this.selectId).then(res => {
-          if (res) {
-            this.handleGetFaculties()
-            this.dialogUpdate = false
-            this.showMessage('success', 'Tạo mới thành công')
-          }
-        }).catch(error => {
-          let errors = _.get(error.response, 'data.error', {})
-          if (Object.keys(errors).length === 0) {
-            let message = _.get(error.response, 'data.message', '')
-            this.showMessage('error', message)
-          }
-          if (Object.keys(errors).length > 0) {
-            this.serveError.name = _.get(errors, 'name[0]', '')
-            this.serveError.facultyId = _.get(errors, 'faculty_id[0]', '')
-          }
-          this.setLoader(false)
-        })
+          api.updateFaculty(payload, this.selectId).then(() => {
+              this.handleGetFaculties()
+              this.dialogUpdate = false
+              this.showMessage('success', 'Cập nhật thành công')
+          }).catch(error => {
+              let errors = _.get(error.response, 'data.error', {})
+              if (Object.keys(errors).length === 0) {
+                  let message = _.get(error.response, 'data.message', '')
+                  this.showMessage('error', message)
+              }
+              if (Object.keys(errors).length > 0) {
+                  this.serveError.name = _.get(errors, 'name[0]', '')
+                  this.serveError.facultyId = _.get(errors, 'faculty_id[0]', '')
+              }
+              this.setLoader(false)
+          })
       }
     },
     handleDeleteFaculty() {
@@ -577,7 +571,7 @@ export default {
       api.deleteFaculty(this.selectId).then(() => {
         this.handleGetFaculties()
         this.dialogDelete = false
-        this.showMessage('success', 'Tạo mới thành công')
+        this.showMessage('success', 'Xóa thành công')
       }).catch(error => {
         let errors = _.get(error.response, 'data.error', {})
         if (Object.keys(errors).length === 0) {
@@ -592,48 +586,48 @@ export default {
       this.getFaculties()
     },
     resetForm() {
-      this.facultyId = ''
-      this.name = ''
-      this.selectId = ''
-      this.isActive = ''
-      this.serveError = {
-        name: '',
-        facultyId: ''
+        this.facultyId = ''
+        this.name = ''
+        this.selectId = ''
+        this.isActive = ''
+        this.serveError = {
+            name: '',
+            facultyId: ''
+        }
+        this.$v.$reset()
+    },
+      openDialogCreate() {
+          this.resetForm()
+          this.dialogCreate = true
+      },
+      openDialogUpdate(item) {
+          this.resetForm()
+          this.name = _.get(item, 'name', '')
+          this.facultyId = _.get(item, 'faculty_id', '')
+          this.selectId = _.get(item, 'id', '')
+          this.isActive = _.get(item, 'is_active', '')
+          this.dialogUpdate = true
+      },
+      openDialogShow(item) {
+          this.resetForm()
+          this.name = _.get(item, 'name', '')
+          this.facultyId = _.get(item, 'faculty_id', '')
+          this.selectId = _.get(item, 'id', '')
+          this.isActive = _.get(item, 'is_active', false)
+          this.dialogShow = true
+      },
+      openDialogDelete(item) {
+          this.resetForm()
+          this.selectId = _.get(item, 'id', '')
+          this.dialogDelete = true
+      },
+      showMessage(type, message) {
+          this.snackbar = {
+              message: message,
+              color: type,
+              isShow: true,
+          }
       }
-      this.$v.$reset()
-    },
-    openDialogCreate() {
-      this.resetForm()
-      this.dialogCreate = true
-    },
-    openDialogUpdate(item) {
-      this.resetForm()
-      this.name = _.get(item, 'name', '')
-      this.facultyId = _.get(item, 'faculty_id', '')
-      this.selectId = _.get(item, 'id', '')
-      this.isActive = _.get(item, 'is_active', '')
-      this.dialogUpdate = true
-    },
-    async openDialogShow(item) {
-      this.resetForm()
-      this.name = _.get(item, 'name', '')
-      this.facultyId = _.get(item, 'faculty_id', '')
-      this.selectId = _.get(item, 'id', '')
-      this.isActive = _.get(item, 'is_active', false)
-      this.dialogShow = true
-    },
-    openDialogDelete(item) {
-      this.resetForm()
-      this.selectId = _.get(item, 'id', '')
-      this.dialogDelete = true
-    },
-    showMessage(type, message) {
-      this.snackbar = {
-        message: message,
-        color: type,
-        isShow: true,
-      }
-    }
   },
   mounted() {
     this.changeTitle('Quản lý khoa - bộ môn')

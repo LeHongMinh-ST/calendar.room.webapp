@@ -9,9 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Feedback extends Model
 {
     protected $table = 'feedbacks';
-    use SoftDeletes;
 
-    public function User():BelongsTo
+    public function user():BelongsTo
     {
         return $this->belongsTo(User::class);
     }

@@ -8,16 +8,23 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Semester extends Model
 {
-    use SoftDeletes;
 
-    protected $dates = ['deleted_at'];
+    protected $fillable = [
+        'semester',
+        'number_weeks',
+        'school_year',
+        'semester_start_date',
+        'semester_end_date',
+        'user_create_id',
+        'user_update_id',
+    ];
 
-    public function Weeks()
+    public function weeks()
     {
         return $this->hasMany(Week::class);
     }
 
-    public function Assignments()
+    public function assignments()
     {
         return $this->hasMany(Assignment::class);
     }

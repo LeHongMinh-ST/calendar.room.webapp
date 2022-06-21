@@ -7,14 +7,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Assignment extends Model
 {
-    use SoftDeletes;
-    protected $dates = ['deleted_at'];
-    public function Room()
+    public function room()
     {
         return $this->belongsTo(Room::class);
     }
 
-    public function Semester()
+    public function semester()
     {
         return $this->belongsTo(Semester::class);
     }

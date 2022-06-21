@@ -107,5 +107,25 @@ export default {
             method: 'get',
             url: `/department/get-by-faculty/${facultyId}`,
         })
-    }
+    },
+    createDepartment(data) {
+        return apiAxios({
+            method: 'post',
+            url: '/department',
+            data: data
+        })
+    },
+    updateDepartment(data, id) {
+        return apiAxios({
+            method: 'put',
+            url: `/department/${id}`,
+            data: data
+        })
+    },
+    deleteDepartment(id) {
+        return apiAxios({
+            method: 'delete',
+            url: `/department/${id}`,
+        })
+    },
 }

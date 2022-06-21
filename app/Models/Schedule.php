@@ -9,7 +9,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class Schedule extends Model
 {
-    use SoftDeletes;
 
     protected $fillable = [
         'room_id',
@@ -31,17 +30,17 @@ class Schedule extends Model
         'week_check',
     ];
 
-    public function Subject()
+    public function subject()
     {
         return $this->belongsTo(Subject::class);
     }
 
-    public function Room()
+    public function room()
     {
         return $this->belongsTo(Room::class);
     }
 
-    public function Semester()
+    public function semester()
     {
         return $this->belongsTo(Semester::class);
     }

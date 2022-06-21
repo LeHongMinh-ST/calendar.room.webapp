@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Register extends Model
 {
-    use SoftDeletes;
-
     public $timestamps = false;
 
     public function User(): \Illuminate\Database\Eloquent\Relations\BelongsTo

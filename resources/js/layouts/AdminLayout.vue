@@ -30,7 +30,7 @@
           </v-list-item>
 
           <v-list-item-subtitle>
-            Quản lý chung
+              <span class="font-weight-bold">Quản lý chung</span>
           </v-list-item-subtitle>
           <v-list-item link to="/faculty">
             <v-list-item-icon>
@@ -44,7 +44,7 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item link>
+          <v-list-item link to="/semester">
             <v-list-item-icon>
               <v-icon>
                 {{ icon.mdiViewWeek }}
@@ -56,7 +56,7 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item link>
+          <v-list-item link to="/subject">
             <v-list-item-icon>
               <v-icon>
                 {{ icon.mdiBookOpenVariant }}
@@ -68,7 +68,7 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item link>
+          <v-list-item link to="/room">
             <v-list-item-icon>
               <v-icon>
                 {{ icon.mdiLaptop }}
@@ -82,7 +82,7 @@
           </v-list-item>
 
           <v-list-item-subtitle>
-            Thời khóa biểu
+              <span class="font-weight-bold">Thời khóa biểu</span>
           </v-list-item-subtitle>
           <v-list-item link >
             <v-list-item-icon>
@@ -122,7 +122,7 @@
           </v-list-item>
 
           <v-list-item-subtitle>
-            Người dùng
+              <span class="font-weight-bold">Người dùng</span>
           </v-list-item-subtitle>
           <v-list-item link>
             <v-list-item-icon>
@@ -162,7 +162,7 @@
           </v-list-item>
 
           <v-list-item-subtitle>
-            Báo cáo thông kê
+              <span class="font-weight-bold">Báo cáo thống kê</span>
           </v-list-item-subtitle>
           <v-list-item link>
             <v-list-item-icon>
@@ -189,7 +189,7 @@
             </v-list-item-content>
           </v-list-item>
           <v-list-item-subtitle>
-            Hệ thống
+              <span class="font-weight-bold">Hệ thống</span>
           </v-list-item-subtitle>
           <v-list-item link>
             <v-list-item-icon>

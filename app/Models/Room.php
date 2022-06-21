@@ -7,15 +7,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Room extends Model
 {
-    use SoftDeletes;
 
-    protected $dates = ['deleted_at'];
-    public function Schedules()
+    public function schedules()
     {
         return $this->hasMany(Schedule::class);
     }
 
-    public function Assignments()
+    public function assignments()
     {
         return $this->hasMany(Assignment::class);
     }

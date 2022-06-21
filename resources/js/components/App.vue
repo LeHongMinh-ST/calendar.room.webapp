@@ -29,6 +29,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
+.required {
+    color: #ff5e5e;
+}
 
 </style>

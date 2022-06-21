@@ -21,6 +21,7 @@ class DepartmentController extends Controller
     {
         $this->departmentRepository = $departmentRepository;
     }
+
     public function index(Request $request): JsonResponse
     {
         $data = $request->all();
