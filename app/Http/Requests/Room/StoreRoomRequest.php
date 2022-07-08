@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Subject;
+namespace App\Http\Requests\Room;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateSubjectRequest extends FormRequest
+class StoreRoomRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,18 +24,21 @@ class UpdateSubjectRequest extends FormRequest
     public function rules()
     {
         return [
-            'subject_id' => 'required|unique:subjects,subject_id,' . $this->id . ',id|min:4|max:15',
-            'name' => 'required|min:3|max:100',
-            'department_id' => 'required'
+            'room_id' => 'required|unique:rooms|max:10',
+            'name' => 'required|unique:rooms|max:60',
+            'computer_number' => 'required|numeric|min:10|max:100',
+            'address' => 'required'
         ];
     }
 
     public function attributes()
     {
         return [
-            'name' => 'Tên môn học',
-            'department_id' => 'Mã bộ môn',
-            'subject_id' => 'Mã môn học',
+            'name' => 'Tên phòng máy',
+            'room_id' => 'Mã phòng máy',
+            'computer_number' => 'Số máy',
+            'address' => 'Địa chỉ',
         ];
     }
+
 }

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\Assignment\AssignmentRepository;
+use App\Repositories\Assignment\AssignmentRepositoryInterface;
 use App\Repositories\Base\BaseRepository;
 use App\Repositories\Base\BaseRepositoryInterface;
 use App\Repositories\Department\DepartmentRepository;
@@ -43,6 +45,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(RoomRepositoryInterface::class, RoomRepository::class);
         $this->app->bind(FeedbackRepositoryInterface::class, FeedbackRepository::class);
         $this->app->bind(WeekRepositoryInterface::class, WeekRepository::class);
+        $this->app->bind(AssignmentRepositoryInterface::class, AssignmentRepository::class);
     }
 
     /**

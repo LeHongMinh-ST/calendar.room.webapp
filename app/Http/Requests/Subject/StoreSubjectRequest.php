@@ -13,7 +13,7 @@ class StoreSubjectRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,18 @@ class StoreSubjectRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'subject_id' => 'required|unique:subjects|min:4|max:15',
+            'name' => 'required|min:3|max:100',
+            'department_id' => 'required'
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'name' => 'Tên môn học',
+            'department_id' => 'Mã bộ môn',
+            'subject_id' => 'Mã môn học',
         ];
     }
 }

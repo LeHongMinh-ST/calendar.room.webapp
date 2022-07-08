@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Repositories\Subject;
+namespace App\Repositories\Assignment;
 
-use App\Models\Subject;
+use App\Models\Room;
 use App\Repositories\Base\BaseRepository;
 
-class SubjectRepository extends BaseRepository implements SubjectRepositoryInterface
+class AssignmentRepository extends BaseRepository implements AssignmentRepositoryInterface
 {
-    public function __construct(Subject $model)
+    public function __construct(Room $model)
     {
         parent::__construct($model);
     }
 
     public function create(array $payload)
     {
-        $payload['subject_id'] = strtoupper($payload['subject_id']);
+        $payload = $this->getRoomPayload($payload);
         $payload['user_create_id'] = auth()->id();
         $payload['user_update_id'] = auth()->id();
         return parent::create($payload);
@@ -22,7 +22,7 @@ class SubjectRepository extends BaseRepository implements SubjectRepositoryInter
 
     public function updateById(int $id, array $payload)
     {
-        $payload['subject_id'] = strtoupper($payload['subject_id']);
+        $payload = $this->getRoomPayload($payload);
         $payload['user_update_id'] = auth()->id();
         return parent::updateById($id, $payload);
     }
