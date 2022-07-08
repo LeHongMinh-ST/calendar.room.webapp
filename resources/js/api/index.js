@@ -128,4 +128,33 @@ export default {
             url: `/department/${id}`,
         })
     },
+
+    //semester
+    getSemesters(params = null) {
+        return apiAxios({
+            method: 'get',
+            url: '/semester',
+            params: params
+        })
+    },
+    createSemester(data) {
+        return apiAxios({
+            method: 'post',
+            url: '/semester',
+            data: data
+        })
+    },
+    updateSemester(data, id) {
+        return apiAxios({
+            method: 'put',
+            url: `/semester/${id}`,
+            data: data
+        })
+    },
+    deleteSemester(id) {
+        return apiAxios({
+            method: 'delete',
+            url: `/semester/${id}`,
+        })
+    },
 }

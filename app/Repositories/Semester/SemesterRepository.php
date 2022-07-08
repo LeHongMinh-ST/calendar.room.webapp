@@ -25,6 +25,9 @@ class SemesterRepository extends BaseRepository implements SemesterRepositoryInt
 
     public function updateById(int $id, array $payload)
     {
+        $dateSemester = $this->processSemesterStartDate($payload['semester_start_date'], $payload['number_weeks']);
+        $payload['semester_start_date'] = $dateSemester['start'];
+        $payload['semester_end_date'] = $dateSemester['end'];
         $payload['user_update_id'] = auth()->id();
         return parent::updateById($id, $payload);
     }
