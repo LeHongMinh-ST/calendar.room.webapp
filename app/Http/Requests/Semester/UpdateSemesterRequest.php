@@ -24,7 +24,16 @@ class UpdateSemesterRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'number_weeks' => 'required|numeric|max:60|min:2',
+            'semester_start_date' => 'required',
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'number_weeks' => 'Số tuần',
+            'semester_start_date' => 'Ngày bắt đầu',
         ];
     }
 }

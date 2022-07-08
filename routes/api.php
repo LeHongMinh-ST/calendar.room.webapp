@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\FacultyController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\SemesterController;
 use App\Http\Controllers\Api\RoomController;
+use App\Http\Controllers\Api\SubjectController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -59,6 +60,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::post('/', [SemesterController::class, 'store']);
         Route::put('/{id}', [SemesterController::class, 'update']);
         Route::delete('/{id}', [SemesterController::class, 'destroy']);
+        Route::get('/{id}/weeks', [SemesterController::class, 'getBySemesterId']);
     });
 
     Route::prefix('room')->group(function () {
@@ -67,6 +69,13 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('/{id}', [RoomController::class, 'show']);
         Route::put('/{id}', [RoomController::class, 'update']);
         Route::delete('/{id}', [RoomController::class, 'destroy']);
+    });
+
+    Route::prefix('subject')->group(function () {
+        Route::get('/', [SubjectController::class, 'index']);
+        Route::get('/{id}', [SubjectController::class, 'show']);
+        Route::put('/{id}', [SubjectController::class, 'update']);
+        Route::delete('/{id}', [SubjectController::class, 'destroy']);
     });
 });
 

@@ -53,6 +53,22 @@ class WeekRepository extends BaseRepository implements WeekRepositoryInterface
         return $weeks;
     }
 
+    public function getBySemesterId($id, $filter = [], $relations = [])
+    {
+        $paginate = config('constants.limit_of_paginate', 10);
+        $orderBy = $filters['order_by'] ?? 'created_at';
+        $order = $filters['order'] ?? 'desc';
+        $search = $filters['q'] ?? '';
+        $paginate = (int)($filters['per_page'] ?? $paginate);
+
+        return $this->model
+            ->whrere('id', $id)
+            ->search($search)
+            ->orderBy($orderBy, $order)
+            ->with($relations)
+            ->paginate($paginate);
+    }
+
     private function processDate($dateTimestamp)
     {
         return strftime("%Y-%m-%d", $dateTimestamp);

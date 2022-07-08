@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Semester\StoreSemesterRequest;
 use App\Http\Requests\Semester\UpdateSemesterRequest;
+use App\Repositories\Assignment\AssignmentRepositoryInterface;
 use App\Repositories\Semester\SemesterRepositoryInterface;
 use App\Repositories\Week\WeekRepositoryInterface;
 use App\Traits\ResponseTrait;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -19,19 +20,24 @@ class SemesterController extends Controller
 
     private $semesterRepository;
     private $weekRepository;
+    private $assignmentRepository;
 
     public function __construct(
-        SemesterRepositoryInterface $semesterRepository,
-        WeekRepositoryInterface     $weekRepository
+        SemesterRepositoryInterface   $semesterRepository,
+        WeekRepositoryInterface       $weekRepository,
+        AssignmentRepositoryInterface $assignmentRepository
     )
     {
         $this->semesterRepository = $semesterRepository;
         $this->weekRepository = $weekRepository;
+        $this->assignmentRepository = $assignmentRepository;
     }
 
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
-
+        $data = $request->all();
+        $semesters = $this->semesterRepository->getFilters($data, ['weeks']);
+        return $this->responseSuccess(['semesters' => $semesters]);
     }
 
     public function store(StoreSemesterRequest $request): JsonResponse
@@ -58,17 +64,69 @@ class SemesterController extends Controller
         }
     }
 
-    public function update(UpdateSemesterRequest $request, $id)
+    public function update(UpdateSemesterRequest $request, $id): JsonResponse
     {
+        DB::beginTransaction();
+        try {
+            $data = $request->all();
 
+            $schoolYear = $this->semesterRepository->findById($id);
+
+            $semester = $this->semesterRepository->getFirstBy([
+                'semester' => $data['semester'],
+                'school_year' => $schoolYear->school_year,
+                ['id', '<>', $id]
+            ]);
+
+            if ($semester) {
+                $message = 'Học kỳ đã tồn tại!';
+                return $this->responseError($message);
+            }
+
+            $semester = $this->semesterRepository->updateById($id, $data);
+
+            $this->weekRepository->deleteBy(['semester_id' => $id]);
+
+            $weeks = $this->weekRepository->createBySemester($data, $semester);
+            DB::commit();
+
+            return $this->responseSuccess([
+                'weeks' => $weeks
+            ]);
+
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            Log::error('Error update semester', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
     }
 
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
+        $assigment = $this->assignmentRepository->getFirstBy(['semester_id', $id]);
 
+        if ($assigment) {
+            $message = 'Học kỳ đang được sử dụng. Không thế xóa học kỳ!';
+            return $this->responseError($message);
+        }
+
+        if ($this->semesterRepository->deleteById($id)) {
+            $this->weekRepository->deleteBy(['semester_id' => $id]);
+            return $this->responseSuccess();
+        }
+
+        return $this->responseError();
     }
 
-
+    public function getWeekBySemesterId(Request $request, $id): JsonResponse
+    {
+        $data = $request->all();
+        $weeks = $this->weekRepository->getBySemesterId($id, $data);
+        return $this->responseSuccess(['weeks' => $weeks]);
+    }
 
 
 }

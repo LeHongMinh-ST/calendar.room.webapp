@@ -63,7 +63,7 @@ class RoomController extends Controller
     {
         try {
             $data = $request->all();
-            $this->roomRepository->update($data, $id);
+            $this->roomRepository->updateById($id, $data);
             return $this->responseSuccess();
         } catch (\Exception $exception) {
             Log::error('Error update room', [
