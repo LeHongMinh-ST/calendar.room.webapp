@@ -136,6 +136,7 @@ export default {
                   user_name: this.userName,
                   password: this.password,
               }
+
               api.login(data).then(async (response) => {
                   if (response) {
                       this.updateAccessToken(_.get(response, "data.access_token"));

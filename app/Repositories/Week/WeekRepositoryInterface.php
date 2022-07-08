@@ -6,5 +6,5 @@ use App\Repositories\Base\BaseRepositoryInterface;
 
 interface WeekRepositoryInterface extends BaseRepositoryInterface
 {
-
+    public function createBySemester($data, $semester);
 }

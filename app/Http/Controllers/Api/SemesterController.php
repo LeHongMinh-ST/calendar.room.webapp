@@ -39,32 +39,8 @@ class SemesterController extends Controller
         DB::beginTransaction();
         try {
             $data = $request->all();
-            $dateSemester = $this->processSemesterStartDate($data['semester_start_date'], $data['number_weeks']);
-
-            $data['semester_start_date'] = $dateSemester['start'];
-            $data['semester_end_date'] = $dateSemester['end'];;
             $semester = $this->semesterRepository->create($data);
-
-            $date = 7 - date("N", $data['semester_start_date']);
-            $weeks = [];
-            for ($i = 1; $i <= $data['number_weeks']; $i++) {
-                if ($i == 1) {
-                    $startDate = 0;
-                    $endDate = $date;
-                } else {
-                    $startDate = $date + ($i - 2) * 7 + 1;
-                    $endDate = $date + ($i - 1) * 7;
-                }
-                $startDayTimestamp = strtotime($semester->semester_start_date . " + $startDate days");
-                $endDayTimestamp = strtotime($semester->semester_start_date . " + $endDate days");
-
-                $dataWeek = [];
-                $dataWeek['semester_id'] = $semester->id;
-                $dataWeek['week'] = $i;
-                $dataWeek['start_day'] = $this->processDate($startDayTimestamp);
-                $dataWeek['end_day'] = $this->processDate($endDayTimestamp);
-                $weeks[] = $this->weekRepository->create($dataWeek);
-            }
+            $weeks = $this->weekRepository->createBySemester($data, $semester);
             DB::commit();
 
             return $this->responseSuccess([
@@ -92,22 +68,7 @@ class SemesterController extends Controller
 
     }
 
-    private function processDate($dateTimestamp)
-    {
-        return strftime("%Y-%m-%d", $dateTimestamp);
-    }
 
-    private function processSemesterStartDate($date, $numberWeek): array
-    {
-        $semesterStartDate = str_replace('/', '-', $date);
-        $semesterStartDate = date("Y-m-d", strtotime($semesterStartDate));
-        $countDay = date("N", strtotime($semesterStartDate));
-        $semesterEndDate = strtotime($semesterStartDate . " + $numberWeek week - $countDay day");
-        $semesterEndDate = strftime("%Y-%m-%d", $semesterEndDate);
 
-        return [
-            'start' => $semesterStartDate,
-            'end' => $semesterEndDate,
-        ];
-    }
+
 }

@@ -31,7 +31,7 @@ class FacultyController extends Controller
     public function index(Request $request): JsonResponse
     {
         $data = $request->all();
-        $faculties = $this->facultyRepository->getFacultyFilters($data, ['departments']);
+        $faculties = $this->facultyRepository->getFilters($data, ['departments']);
         return $this->responseSuccess(['faculties' => $faculties]);
     }
 

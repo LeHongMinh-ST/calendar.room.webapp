@@ -46,4 +46,6 @@ interface BaseRepositoryInterface
 
     public function insert(array $data);
 
+    public function getFilters(array $filters, array $relations = []);
+
 }

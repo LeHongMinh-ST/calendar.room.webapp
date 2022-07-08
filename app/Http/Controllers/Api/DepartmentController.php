@@ -25,7 +25,7 @@ class DepartmentController extends Controller
     public function index(Request $request): JsonResponse
     {
         $data = $request->all();
-        $departments = $this->departmentRepository->getDepartmentFilters($data);
+        $departments = $this->departmentRepository->getFilters($data);
         return $this->responseSuccess(['departments' => $departments]);
     }
 

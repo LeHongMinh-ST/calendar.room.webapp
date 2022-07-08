@@ -14,6 +14,9 @@ class SemesterRepository extends BaseRepository implements SemesterRepositoryInt
 
     public function create(array $payload)
     {
+        $dateSemester = $this->processSemesterStartDate($payload['semester_start_date'], $payload['number_weeks']);
+        $payload['semester_start_date'] = $dateSemester['start'];
+        $payload['semester_end_date'] = $dateSemester['end'];
         $payload['user_create_id'] = auth()->id();
         $payload['user_update_id'] = auth()->id();
 
@@ -24,5 +27,19 @@ class SemesterRepository extends BaseRepository implements SemesterRepositoryInt
     {
         $payload['user_update_id'] = auth()->id();
         return parent::updateById($id, $payload);
+    }
+
+    private function processSemesterStartDate($date, $numberWeek): array
+    {
+        $semesterStartDate = str_replace('/', '-', $date);
+        $semesterStartDate = date("Y-m-d", strtotime($semesterStartDate));
+        $countDay = date("N", strtotime($semesterStartDate));
+        $semesterEndDate = strtotime($semesterStartDate . " + $numberWeek week - $countDay day");
+        $semesterEndDate = strftime("%Y-%m-%d", $semesterEndDate);
+
+        return [
+            'start' => $semesterStartDate,
+            'end' => $semesterEndDate,
+        ];
     }
 }
