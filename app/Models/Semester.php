@@ -28,4 +28,12 @@ class Semester extends Model
     {
         return $this->hasMany(Assignment::class);
     }
+
+    public function scopeSearch($query, $search)
+    {
+        if ($search) {
+            $query->where('school_year', 'like', '%' . $search . '%');
+        }
+        return $query;
+    }
 }
