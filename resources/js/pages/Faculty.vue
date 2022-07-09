@@ -623,10 +623,11 @@ export default {
     },
     showMessage(type, message) {
       this.snackbar = {
-        message: message,
-        color: type,
-        isShow: true,
+          message: message,
+          color: type,
+          isShow: true,
       }
+      setTimeout(() => this.snackbar.isShow = false, 2000)
     }
   },
   mounted() {

@@ -8,11 +8,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Week extends Model
 {
-    use SoftDeletes;
+    protected $fillable = [
+        'semester_id',
+        'week',
+        'start_day',
+        'end_day',
+        'note',
+        'user_create_id',
+        'user_update_id',
+    ];
+
 
     protected $dates = ['deleted_at'];
 
-    public function Semester()
+    public function semester()
     {
         return $this->belongsTo(Semester::class);
     }

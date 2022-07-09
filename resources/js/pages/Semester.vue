@@ -257,24 +257,59 @@
           <v-divider></v-divider>
 
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-                @click="handleCreateSemester"
-                color="primary"
-            >
-              Thêm mới
-            </v-btn>
-            <v-btn
-                color="red"
-                text
-                @click="dialogCreate = false"
-            >
-              Đóng
-            </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn
+                  @click="handleCreateSemester"
+                  color="primary"
+              >
+                  Thêm mới
+              </v-btn>
+              <v-btn
+                  color="red"
+                  text
+                  @click="dialogCreate = false"
+              >
+                  Đóng
+              </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
+        <v-dialog
+            v-model="dialogDelete"
+            width="450"
+        >
+            <v-card>
+                <v-card-title class="text-h5 grey lighten-2">
+                    Xoá bản ghi ?
+                </v-card-title>
 
+                <v-card-text>
+                    <div class="font-weight-bold">
+                        Bạn chắc chắn muốn xoá bản ghi? Dữ liệu không thể phục hồi!
+                    </div>
+                </v-card-text>
+
+                <v-divider></v-divider>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="#E53935"
+                        dark
+                        @click="handleDeleteSemester"
+                    >
+                        Đồng ý
+                    </v-btn>
+                    <v-btn
+                        color="primary"
+                        text
+                        @click="dialogDelete = false"
+                    >
+                        Đóng
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
     <v-snackbar
         :value="snackbar.isShow"
@@ -425,6 +460,7 @@ export default {
       }
       return schoolYears.reverse()
     },
+
   },
   methods: {
     ...mapMutations('home', [
@@ -530,23 +566,40 @@ export default {
             this.showMessage('error', message)
           }
           if (Object.keys(errors).length > 0) {
-            this.serveError.numberWeek = _.get(errors, 'number_weeks[0]', '')
-            this.serveError.startDate = _.get(errors, 'semester_start_date[0]', '')
-            this.serveError.semester = _.get(errors, 'semester[0]', '')
-            this.serveError.school_year = _.get(errors, 'school_year[0]', '')
+              this.serveError.numberWeek = _.get(errors, 'number_weeks[0]', '')
+              this.serveError.startDate = _.get(errors, 'semester_start_date[0]', '')
+              this.serveError.semester = _.get(errors, 'semester[0]', '')
+              this.serveError.school_year = _.get(errors, 'school_year[0]', '')
           }
-          this.setLoader(false)
+            this.setLoader(false)
 
         })
       }
     },
-    showMessage(type, message) {
-      this.snackbar = {
-        message: message,
-        color: type,
-        isShow: true,
+      handleDeleteSemester() {
+          this.setLoader(true)
+          api.deleteSemester(this.selectId).then(() => {
+              this.handleGetSemester()
+              this.dialogDelete = false
+              this.showMessage('success', 'Xóa thành công')
+          }).catch(error => {
+              let errors = _.get(error.response, 'data.error', {})
+              if (Object.keys(errors).length === 0) {
+                  let message = _.get(error.response, 'data.message', '')
+                  this.showMessage('error', message)
+              }
+              this.setLoader(false)
+          })
+      },
+      showMessage(type, message) {
+          this.snackbar = {
+              message: message,
+              color: type,
+              isShow: true,
+          }
+
+          setTimeout(() => this.snackbar.isShow = false, 2000)
       }
-    }
   },
   mounted() {
     this.changeTitle('Quản lý học kỳ - tuần')

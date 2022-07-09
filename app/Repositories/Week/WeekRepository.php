@@ -4,6 +4,7 @@ namespace App\Repositories\Week;
 
 use App\Models\Week;
 use App\Repositories\Base\BaseRepository;
+use Carbon\Carbon;
 
 class WeekRepository extends BaseRepository implements WeekRepositoryInterface
 {
@@ -29,15 +30,16 @@ class WeekRepository extends BaseRepository implements WeekRepositoryInterface
 
     public function createBySemester($data, $semester): array
     {
-        $date = 7 - date("N", $data['semester_start_date']);
+
+        $dayOfWeek = 7 - Carbon::make($data['semester_start_date'])->dayOfWeek;
         $weeks = [];
         for ($i = 1; $i <= $data['number_weeks']; $i++) {
             if ($i == 1) {
                 $startDate = 0;
-                $endDate = $date;
+                $endDate = $dayOfWeek;
             } else {
-                $startDate = $date + ($i - 2) * 7 + 1;
-                $endDate = $date + ($i - 1) * 7;
+                $startDate = (($dayOfWeek + ($i - 2)) * 7) + 1;
+                $endDate = ($dayOfWeek + ($i - 1)) * 7;
             }
             $startDayTimestamp = strtotime($semester->semester_start_date . " + $startDate days");
             $endDayTimestamp = strtotime($semester->semester_start_date . " + $endDate days");

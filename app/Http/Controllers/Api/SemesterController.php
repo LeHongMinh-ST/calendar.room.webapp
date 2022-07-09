@@ -106,8 +106,7 @@ class SemesterController extends Controller
 
     public function destroy($id): JsonResponse
     {
-        $assigment = $this->assignmentRepository->getFirstBy(['semester_id', $id]);
-
+        $assigment = $this->assignmentRepository->getFirstBy(['semester_id' => $id]);
         if ($assigment) {
             $message = 'Học kỳ đang được sử dụng. Không thế xóa học kỳ!';
             return $this->responseError($message);

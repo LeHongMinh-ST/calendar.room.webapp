@@ -2,12 +2,12 @@
 
 namespace App\Repositories\Assignment;
 
-use App\Models\Room;
+use App\Models\Assignment;
 use App\Repositories\Base\BaseRepository;
 
 class AssignmentRepository extends BaseRepository implements AssignmentRepositoryInterface
 {
-    public function __construct(Room $model)
+    public function __construct(Assignment $model)
     {
         parent::__construct($model);
     }
