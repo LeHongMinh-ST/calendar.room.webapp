@@ -322,8 +322,8 @@
                         <label><span class="font-weight-bold">Ngày bắt đầu <span
                             class="required">*</span>:</span></label>
                         <v-menu
-                            ref="menuPicker"
-                            v-model="menuPicker"
+                            ref="menuPickerUpdate"
+                            v-model="menuPickerUpdate"
                             :close-on-content-click="false"
                             transition="scale-transition"
                             offset-y
@@ -348,7 +348,7 @@
                             <v-date-picker
                                 v-model="startDate"
                                 no-title
-                                @input="menuPicker = false"
+                                @input="menuPickerUpdate = false"
                                 :max="limitYear.max"
                                 :min="limitYear.min"
                             />
@@ -447,6 +447,7 @@ export default {
     name: "Semester",
     data: () => ({
         menuPicker: false,
+        menuPickerUpdate: false,
         dateFormatted: "",
         icon: {
             mdiMagnify,
@@ -603,6 +604,7 @@ export default {
             this.startDate = this.getValue(item, 'semester_start_date', '')
             this.numberWeek = this.getValue(item, 'number_weeks', '')
             this.schoolYear = this.getValue(item, 'school_year', '')
+            this.dateFormatted = this.formatDate(this.startDate)
             this.dialogUpdate = true
         },
         openDialogShow(item) {
@@ -642,11 +644,9 @@ export default {
                 this.page.currentPage = _.get(res, 'data.data.semesters.current_page', 1)
                 this.page.total = _.get(res, 'data.data.semesters.last_page', 0)
                 this.page.perPage = _.get(res, 'data.data.semesters.per_page', 0)
-                this.setLoader(false)
             }).catch(() => {
                 this.showMessage('error', 'Không tải được dữ liệu')
-                this.setLoader(false)
-            })
+            }).finally(() => this.setLoader(false))
         },
         handleCreateSemester() {
             this.$v.$touch()
@@ -661,11 +661,9 @@ export default {
                 }
 
                 api.createSemester(payload).then(res => {
-                    if (res) {
-                        this.handleGetSemester()
-                        this.dialogCreate = false
-                        this.showMessage('success', 'Tạo mới thành công')
-                    }
+                    this.handleGetSemester()
+                    this.dialogCreate = false
+                    this.showMessage('success', 'Tạo mới thành công')
                 }).catch(error => {
                     let errors = _.get(error.response, 'data.error', {})
                     if (Object.keys(errors).length === 0) {
@@ -678,9 +676,8 @@ export default {
                         this.serveError.semester = _.get(errors, 'semester[0]', '')
                         this.serveError.school_year = _.get(errors, 'school_year[0]', '')
                     }
-                    this.setLoader(false)
 
-                })
+                }).finally(() => this.setLoader(false))
             }
         },
         handleDeleteSemester() {
@@ -695,8 +692,7 @@ export default {
                     let message = _.get(error.response, 'data.message', '')
                     this.showMessage('error', message)
                 }
-                this.setLoader(false)
-            })
+            }).finally(() => this.setLoader(false))
         },
         handleUpdateSemester() {
             this.$v.$touch()
@@ -710,11 +706,9 @@ export default {
                 }
 
                 api.updateSemester(payload, this.selectId).then(res => {
-                    if (res) {
-                        this.handleGetSemester()
-                        this.dialogUpdate = false
-                        this.showMessage('success', 'Cập nhật thành công')
-                    }
+                    this.handleGetSemester()
+                    this.dialogUpdate = false
+                    this.showMessage('success', 'Cập nhật thành công')
                 }).catch(error => {
                     let errors = _.get(error.response, 'data.error', {})
                     if (Object.keys(errors).length === 0) {
@@ -727,10 +721,9 @@ export default {
                         this.serveError.semester = _.get(errors, 'semester[0]', '')
                         this.serveError.school_year = _.get(errors, 'school_year[0]', '')
                     }
-                    this.setLoader(false)
-
-                })
+                }).finally(() => this.setLoader(false))
             }
+
         },
         showMessage(type, message) {
             this.snackbar = {
@@ -749,12 +742,25 @@ export default {
     },
     watch: {
         startDate(value) {
-            this.dateFormatted = this.formatDate(value)
+            if (value) {
+                this.serveError.startDate = ""
+                this.dateFormatted = this.formatDate(value)
+            }
         },
         schoolYear(value) {
-            let arrYear = value.split("-")
-            this.limitYear.max = (parseInt(arrYear[1]) + +1).toString()
-            this.limitYear.min = arrYear[0]
+            if (value) {
+                this.serveError.schoolYear = ""
+                let arrYear = value.split("-")
+                this.limitYear.max = (parseInt(arrYear[1]) + +1).toString()
+                this.limitYear.min = arrYear[0]
+            }
+        },
+        semester(value) {
+            if (value) this.serveError.semester = ""
+
+        },
+        numberWeek(value) {
+            if (value) this.serveError.numberWeek = ""
         }
     }
 }

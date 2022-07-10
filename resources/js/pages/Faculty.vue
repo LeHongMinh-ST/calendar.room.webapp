@@ -499,8 +499,7 @@ export default {
                 this.setLoader(false)
             }).catch(() => {
                 this.showMessage('error', 'Không tải được dữ liệu')
-                this.setLoader(false)
-            })
+            }).finally(() => this.setLoader(false))
         },
 
         handleClearSearch() {
@@ -532,9 +531,8 @@ export default {
                         this.serveError.name = _.get(errors, 'name[0]', '')
                         this.serveError.facultyId = _.get(errors, 'faculty_id[0]', '')
                     }
-                    this.setLoader(false)
 
-                })
+                }).finally(() => this.setLoader(false))
             }
         },
         handleUpdateFaculty() {
@@ -562,8 +560,7 @@ export default {
                         this.serveError.name = _.get(errors, 'name[0]', '')
                         this.serveError.facultyId = _.get(errors, 'faculty_id[0]', '')
                     }
-                    this.setLoader(false)
-                })
+                }).finally(() => this.setLoader(false))
             }
         },
         handleDeleteFaculty() {
@@ -578,8 +575,7 @@ export default {
                     let message = _.get(error.response, 'data.message', '')
                     this.showMessage('error', message)
                 }
-                this.setLoader(false)
-            })
+            }).finally(() => this.setLoader(false))
         },
         changePage(page) {
             this.page.currentPage = page

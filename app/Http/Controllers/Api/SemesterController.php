@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Semester\StoreSemesterRequest;
 use App\Http\Requests\Semester\UpdateSemesterRequest;
+use App\Models\Semester;
 use App\Repositories\Assignment\AssignmentRepositoryInterface;
 use App\Repositories\Semester\SemesterRepositoryInterface;
 use App\Repositories\Week\WeekRepositoryInterface;
@@ -69,6 +70,16 @@ class SemesterController extends Controller
         DB::beginTransaction();
         try {
             $data = $request->all();
+
+            if (!$this->semesterRepository->checkTime($id, $data)) {
+                $message = 'error';
+                $data = [
+                  'semester_start_date' => [
+                      'Ngày bắt đầu học kỳ đã tồn tại'
+                  ]
+                ];
+                return $this->responseError($message, $data);
+            }
 
             $schoolYear = $this->semesterRepository->findById($id);
 

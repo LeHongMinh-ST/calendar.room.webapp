@@ -29,6 +29,7 @@
         "@fullcalendar/vue": "^5.11.0",
         "@mdi/font": "^6.7.96",
         "moment": "^2.29.3",
+        "react-refresh": "^0.14.0",
         "vue-router": "^3.5.4",
         "vuelidate": "^0.7.7",
         "vuetify": "^2.6.6",
