@@ -59,12 +59,10 @@ class WeekRepository extends BaseRepository implements WeekRepositoryInterface
         $paginate = config('constants.limit_of_paginate', 10);
         $orderBy = $filters['order_by'] ?? 'created_at';
         $order = $filters['order'] ?? 'desc';
-        $search = $filters['q'] ?? '';
         $paginate = (int)($filters['per_page'] ?? $paginate);
 
         return $this->model
-            ->whrere('id', $id)
-            ->search($search)
+            ->where('semester_id', $id)
             ->orderBy($orderBy, $order)
             ->with($relations)
             ->paginate($paginate);

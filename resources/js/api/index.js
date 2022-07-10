@@ -157,4 +157,12 @@ export default {
             url: `/semester/${id}`,
         })
     },
+    //weeks
+    getWeeksBySemester(id, params) {
+        return apiAxios({
+            method: 'get',
+            url: `/semester/${id}/weeks`,
+            params: params
+        })
+    }
 }

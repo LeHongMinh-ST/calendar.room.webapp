@@ -14,7 +14,6 @@ class AssignmentRepository extends BaseRepository implements AssignmentRepositor
 
     public function create(array $payload)
     {
-        $payload = $this->getRoomPayload($payload);
         $payload['user_create_id'] = auth()->id();
         $payload['user_update_id'] = auth()->id();
         return parent::create($payload);
@@ -22,7 +21,6 @@ class AssignmentRepository extends BaseRepository implements AssignmentRepositor
 
     public function updateById(int $id, array $payload)
     {
-        $payload = $this->getRoomPayload($payload);
         $payload['user_update_id'] = auth()->id();
         return parent::updateById($id, $payload);
     }

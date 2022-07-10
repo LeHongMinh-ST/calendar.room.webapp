@@ -369,8 +369,7 @@ export default {
                         let message = _.get(error.response, 'data.message', '')
                         this.showMessage('error', message)
                     }
-                    this.setLoader(false)
-                })
+                }).finally(() => this.setLoader(false))
             }
         },
         handleCreateDepartment() {
@@ -399,8 +398,8 @@ export default {
                         this.serveError.name = _.get(errors, 'name[0]', '')
                         this.serveError.departmentId = _.get(errors, 'department_id[0]', '')
                     }
-                    this.setLoader(false)
-                })
+
+                }).finally(() => this.setLoader(false))
             }
         },
         handleUpdateDepartment() {
@@ -429,8 +428,7 @@ export default {
                         this.serveError.name = _.get(errors, 'name[0]', '')
                         this.serveError.departmentId = _.get(errors, 'department_id[0]', '')
                     }
-                    this.setLoader(false)
-                })
+                }).finally(() => this.setLoader(false))
             }
         },
         handleDeleteDepartment() {
@@ -445,8 +443,7 @@ export default {
                     let message = _.get(error.response, 'data.message', '')
                     this.showMessage('error', message)
                 }
-                this.setLoader(false)
-            })
+            }).finally(() => this.setLoader(false))
         },
         showMessage(type, message) {
             this.snackbar = {
@@ -454,6 +451,9 @@ export default {
                 color: type,
                 isShow: true,
             }
+
+            setTimeout(() => this.snackbar.isShow = false, 2000)
+
         },
         resetForm() {
             this.departmentId = ''

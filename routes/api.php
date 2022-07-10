@@ -60,7 +60,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::post('/', [SemesterController::class, 'store']);
         Route::put('/{id}', [SemesterController::class, 'update']);
         Route::delete('/{id}', [SemesterController::class, 'destroy']);
-        Route::get('/{id}/weeks', [SemesterController::class, 'getBySemesterId']);
+        Route::get('/{id}/weeks', [SemesterController::class, 'getWeekBySemesterId']);
     });
 
     Route::prefix('room')->group(function () {

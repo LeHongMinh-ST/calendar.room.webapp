@@ -376,6 +376,33 @@
                 </v-card>
             </v-dialog>
             <v-dialog
+                v-model="dialogShow"
+                width="60%"
+            >
+                <v-card>
+                    <v-card-title class="text-h5 lighten-2">
+                        Thông tin tuần
+                    </v-card-title>
+
+                    <v-card-text>
+                        <Week :semester-id="selectId"/>
+                    </v-card-text>
+
+                    <v-divider></v-divider>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="red"
+                            dark
+                            @click="dialogShow = false"
+                        >
+                            Đóng
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+            <v-dialog
                 v-model="dialogDelete"
                 width="450"
             >
@@ -442,9 +469,11 @@ import _ from "lodash"
 import {required} from "vuelidate/lib/validators"
 import moment from "moment";
 import api from "../api";
+import Week from "../components/Week";
 
 export default {
     name: "Semester",
+    components: {Week},
     data: () => ({
         menuPicker: false,
         menuPickerUpdate: false,
@@ -575,6 +604,7 @@ export default {
         },
         changePage(page) {
             this.page.currentPage = page
+            this.handleGetSemester()
         },
         resetForm() {
             this.limitYear = {
@@ -608,8 +638,7 @@ export default {
             this.dialogUpdate = true
         },
         openDialogShow(item) {
-            this.resetForm()
-
+            this.selectId = _.get(item, 'id', '')
             this.dialogShow = true
         },
         formatDate(date) {
