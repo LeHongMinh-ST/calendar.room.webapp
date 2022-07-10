@@ -83,7 +83,9 @@ class SemesterController extends Controller
                 return $this->responseError($message);
             }
 
-            $semester = $this->semesterRepository->updateById($id, $data);
+            $this->semesterRepository->updateById($id, $data);
+
+            $semester = $this->semesterRepository->findById($id);
 
             $this->weekRepository->deleteBy(['semester_id' => $id]);
 

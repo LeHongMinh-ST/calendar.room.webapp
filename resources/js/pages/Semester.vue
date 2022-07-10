@@ -712,7 +712,7 @@ export default {
                 api.updateSemester(payload, this.selectId).then(res => {
                     if (res) {
                         this.handleGetSemester()
-                        this.dialogCreate = false
+                        this.dialogUpdate = false
                         this.showMessage('success', 'Cập nhật thành công')
                     }
                 }).catch(error => {

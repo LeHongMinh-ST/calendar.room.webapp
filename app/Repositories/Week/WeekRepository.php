@@ -30,7 +30,6 @@ class WeekRepository extends BaseRepository implements WeekRepositoryInterface
 
     public function createBySemester($data, $semester): array
     {
-
         $dayOfWeek = 7 - Carbon::make($data['semester_start_date'])->dayOfWeek;
         $weeks = [];
         for ($i = 1; $i <= $data['number_weeks']; $i++) {
