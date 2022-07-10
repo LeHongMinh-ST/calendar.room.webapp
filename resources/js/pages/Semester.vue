@@ -281,7 +281,7 @@
             >
                 <v-card>
                     <v-card-title class="text-h5 lighten-2">
-                        Thêm mới học kỳ
+                        Cập nhật học kỳ
                     </v-card-title>
 
                     <v-card-text>
@@ -766,6 +766,9 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.breadcrumbWrapper {
+    padding-left: 0px;
+    padding-top: 0px;
+}
 </style>
