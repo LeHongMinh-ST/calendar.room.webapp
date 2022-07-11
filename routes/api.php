@@ -77,5 +77,6 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::put('/{id}', [SubjectController::class, 'update']);
         Route::delete('/{id}', [SubjectController::class, 'destroy']);
     });
+
 });
 
