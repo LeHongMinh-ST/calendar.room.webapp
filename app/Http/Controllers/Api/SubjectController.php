@@ -28,6 +28,11 @@ class SubjectController extends Controller
         $subjects= $this->subjectRepository->getFilters($data, ['department']);
         return $this->responseSuccess(['subjects' => $subjects]);
     }
+    public function getListSubject(): JsonResponse
+    {
+        $subjects= $this->subjectRepository->all();
+        return $this->responseSuccess(['subjects' => $subjects]);
+    }
 
     public function store(StoreSubjectRequest $request): JsonResponse
     {

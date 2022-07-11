@@ -180,6 +180,14 @@ export default {
             params: params
         })
     },
+
+    getAllSubject() {
+        return apiAxios({
+            method: 'get',
+            url: '/subject/list',
+        })
+    },
+
     createSubject(data) {
         return apiAxios({
             method: 'post',

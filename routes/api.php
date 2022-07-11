@@ -74,6 +74,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::prefix('subject')->group(function () {
         Route::get('/', [SubjectController::class, 'index']);
+        Route::get('/list', [SubjectController::class, 'getListSubject']);
         Route::post('/', [SubjectController::class, 'store']);
         Route::get('/{id}', [SubjectController::class, 'show']);
         Route::put('/{id}', [SubjectController::class, 'update']);

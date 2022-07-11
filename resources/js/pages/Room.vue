@@ -91,12 +91,18 @@
             >
               <td class="text-center">{{ index + +1 + +page.perPage * (page.currentPage - 1) }}</td>
               <td>
-                {{ getValue(item, 'faculty_id', '') }}
+                {{ getValue(item, 'room_id', '') }}
               </td>
               <td>
                 <span class="nameRoom" @click="openDialogShow(item)">
                     {{ getValue(item, 'name', '') }}
                 </span>
+              </td>
+              <td class="text-center">
+                {{ getValue(item, 'computer_number', 0) }}
+              </td>
+              <td class="text-left">
+                {{ getValue(item, 'address', 'Đang cập nhật') }}
               </td>
               <td class="text-center">
                   <span
@@ -158,7 +164,264 @@
         </template>
       </v-simple-table>
     </v-card>
+    <v-row justify="center">
+      <v-col cols="8">
+        <v-container class="max-width">
+          <v-pagination
+              @input="changePage"
+              v-model="page.currentPage"
+              class="my-4"
+              :length="page.total"
+              :total-visible="10"
+          ></v-pagination>
+        </v-container>
+      </v-col>
+    </v-row>
+    <div class="text-center">
+      <v-dialog
+          v-model="dialogCreate"
+          width="800"
+      >
+        <v-card>
+          <v-card-title class="text-h5 lighten-2">
+            Thêm mới phòng máy
+          </v-card-title>
 
+          <v-card-text>
+            <label><span class="font-weight-bold">Mã phòng máy <span class="required">*</span>:</span></label>
+            <v-text-field
+                v-model="roomId"
+                :error-messages="roomIdErrors"
+                outlined
+                dense
+                color="blue"
+                class="mt-2"
+                @input="$v.roomId.$touch()"
+                @blur="$v.roomId.$touch()"
+            />
+            <label><span class="font-weight-bold">Tên phòng máy<span class="required">*</span>:</span></label>
+            <v-text-field
+                v-model="name"
+                :error-messages="nameErrors"
+                outlined
+                dense
+                color="blue"
+                class="mt-2"
+                @input="$v.name.$touch()"
+                @blur="$v.name.$touch()"
+            />
+            <label><span class="font-weight-bold">Số lượng máy<span class="required">*</span>:</span></label>
+            <v-text-field
+                v-model="computerNumber"
+                :error-messages="computerNumberErrors"
+                outlined
+                dense
+                color="blue"
+                class="mt-2"
+                @input="$v.computerNumber.$touch()"
+                @blur="$v.computerNumber.$touch()"
+            />
+            <label><span class="font-weight-bold">Địa chỉ<span class="required">*</span>:</span></label>
+            <v-text-field
+                v-model="address"
+                :error-messages="addressErrors"
+                outlined
+                dense
+                color="blue"
+                class="mt-2"
+                @input="$v.address.$touch()"
+                @blur="$v.address.$touch()"
+            />
+            <label><span class="font-weight-bold">Địa chỉ<span class="required">*</span>:</span></label>
+            <v-autocomplete
+                :items="subjectArray"
+                item-text="name"
+                item-value="name"
+                :error-messages="subjectErrors"
+                dense
+                v-model="subject"
+                class="mt-2"
+                placeholder="Chọn bộ môn"
+                outlined
+                @input="$v.subject.$touch()"
+                @blur="$v.subject.$touch()"
+                multiple
+                chips
+            />
+            <label><span class="font-weight-bold">Phần mềm môn học<span class="required">*</span>:</span></label>
+            <v-text-field
+                v-model="software"
+                outlined
+                dense
+                color="blue"
+                class="mt-2"
+            />
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+                @click="handleCreateRoom"
+                color="primary"
+            >
+              Thêm mới
+            </v-btn>
+            <v-btn
+                color="red"
+                text
+                @click="dialogCreate = false"
+            >
+              Đóng
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog
+          v-model="dialogUpdate"
+          width="800"
+      >
+        <v-card>
+          <v-card-title class="text-h5 lighten-2">
+            Chỉnh sửa khoa
+          </v-card-title>
+
+          <v-card-text>
+            <label><span class="font-weight-bold">Mã phòng máy <span class="required">*</span>:</span></label>
+            <v-text-field
+                v-model="roomId"
+                :error-messages="roomIdErrors"
+                outlined
+                dense
+                color="blue"
+                class="mt-2"
+                @input="$v.roomId.$touch()"
+                @blur="$v.roomId.$touch()"
+            />
+            <label><span class="font-weight-bold">Tên phòng máy<span class="required">*</span>:</span></label>
+            <v-text-field
+                v-model="name"
+                :error-messages="nameErrors"
+                outlined
+                dense
+                color="blue"
+                class="mt-2"
+                @input="$v.name.$touch()"
+                @blur="$v.name.$touch()"
+            />
+            <label><span class="font-weight-bold">Số lượng máy<span class="required">*</span>:</span></label>
+            <v-text-field
+                v-model="computerNumber"
+                :error-messages="computerNumberErrors"
+                outlined
+                dense
+                color="blue"
+                class="mt-2"
+                @input="$v.computerNumber.$touch()"
+                @blur="$v.computerNumber.$touch()"
+            />
+            <label><span class="font-weight-bold">Địa chỉ<span class="required">*</span>:</span></label>
+            <v-text-field
+                v-model="address"
+                :error-messages="addressErrors"
+                outlined
+                dense
+                color="blue"
+                class="mt-2"
+                @input="$v.address.$touch()"
+                @blur="$v.address.$touch()"
+            />
+            <label><span class="font-weight-bold">Địa chỉ<span class="required">*</span>:</span></label>
+            <v-autocomplete
+                :items="subjectArray"
+                item-text="name"
+                item-value="name"
+                :error-messages="subjectErrors"
+                dense
+                v-model="subject"
+                class="mt-2"
+                placeholder="Chọn bộ môn"
+                outlined
+                @input="$v.subject.$touch()"
+                @blur="$v.subject.$touch()"
+                multiple
+                chips
+            />
+            <label><span class="font-weight-bold">Phần mềm môn học<span class="required">*</span>:</span></label>
+            <v-text-field
+                v-model="software"
+                outlined
+                dense
+                color="blue"
+                class="mt-2"
+            />
+
+            <v-switch
+                v-model="isActive"
+                inset
+                color="success"
+                :label="`${isActive ? 'Hoạt động' : 'Ẩn'}`"
+            ></v-switch>
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+                @click="handleUpdateRoom"
+                color="primary"
+            >
+              Lưu
+            </v-btn>
+            <v-btn
+                color="red"
+                text
+                @click="dialogUpdate = false"
+            >
+              Đóng
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog
+          v-model="dialogDelete"
+          width="450"
+      >
+        <v-card>
+          <v-card-title class="text-h5 grey lighten-2">
+            Xoá bản ghi ?
+          </v-card-title>
+
+          <v-card-text>
+            <div class="font-weight-bold">
+              Bạn chắc chắn muốn xoá bản ghi? Dữ liệu không thể phục hồi!
+            </div>
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+                color="#E53935"
+                dark
+                @click="handleDeleteRoom"
+            >
+              Đồng ý
+            </v-btn>
+            <v-btn
+                color="primary"
+                text
+                @click="dialogDelete = false"
+            >
+              Đóng
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
     <v-snackbar
         :value="snackbar.isShow"
         :timeout="2000"
@@ -231,7 +494,7 @@ export default {
     rooms: [],
     roomId: "",
     name: "",
-    subjects: [],
+    subject: [],
     computerNumber: "",
     address: "",
     software: "",
@@ -240,8 +503,11 @@ export default {
       roomId: '',
       address: '',
       computerNumber: '',
-      subjects: ''
+      subject: ''
     },
+    subjectArray: [],
+    isActive: false,
+    selectId: ""
   }),
   validations: {
     name: {
@@ -256,7 +522,7 @@ export default {
     computerNumber: {
       required
     },
-
+    subject: {}
   },
   computed: {
     nameErrors() {
@@ -295,12 +561,12 @@ export default {
       }
       return errors
     },
-    subjectsErrors() {
+    subjectErrors() {
       const errors = []
-      if (!this.$v.subjects.$dirty) return errors
-      !this.subjects.length > 0 && errors.push('Môn học không được bỏ trống')
-      if (this.serveError.subjects) {
-        errors.push(this.serveError.subjects)
+      if (!this.$v.subject.$dirty) return errors
+      !this.subject.length > 0 && errors.push('Môn học không được bỏ trống')
+      if (this.serveError.subject) {
+        errors.push(this.serveError.subject)
       }
       return errors
     },
@@ -315,10 +581,26 @@ export default {
       return _.get(res, data, df)
     },
     resetForm() {
-
+      this.name = ""
+      this.roomId = ""
+      this.computerNumber = ""
+      this.subject = ""
+      this.software = ""
+      this.address = ""
+      this.serveError = {
+        name: '',
+        roomId: '',
+        address: '',
+        computerNumber: '',
+        subject: ''
+      }
       this.$v.$reset()
     },
-
+    getListSubject() {
+      api.getAllSubject().then(res => {
+        this.subjectArray = _.get(res, 'data.data.subjects', [])
+      })
+    },
     handleGetRooms() {
       this.setLoader(true)
 
@@ -330,7 +612,7 @@ export default {
 
       payload.page = this.page.currentPage
 
-      api.getFaculties(payload).then(res => {
+      api.getRoom(payload).then(res => {
         this.rooms = _.get(res, 'data.data.rooms.data', [])
         this.page.currentPage = _.get(res, 'data.data.rooms.current_page', 1)
         this.page.total = _.get(res, 'data.data.rooms.last_page', 0)
@@ -358,8 +640,12 @@ export default {
       this.name = _.get(item, 'name', '')
       this.roomId = _.get(item, 'room_id', '')
       this.computerNumber = _.get(item, 'computer_number', '')
-      this.subjects = _.get(item, 'subjects', '')
+      this.subject = _.get(item, 'subject', '')
+      if (this.subject) {
+        this.subject = this.subject.split(',')
+      }
       this.software = _.get(item, 'software', '')
+      this.address = _.get(item, 'address', '')
       this.isActive = _.get(item, 'is_active', false)
       this.selectId = _.get(item, 'id', '')
       this.isActive = _.get(item, 'is_active', '')
@@ -378,15 +664,102 @@ export default {
       this.name = _.get(item, 'name', '')
       this.roomId = _.get(item, 'room_id', '')
       this.computerNumber = _.get(item, 'computer_number', '')
-      this.subjects = _.get(item, 'subjects', '')
+      this.subject = _.get(item, 'subject', '')
       this.software = _.get(item, 'software', '')
       this.isActive = _.get(item, 'is_active', false)
       this.dialogShow = true
+    },
+    handleCreateRoom() {
+      this.$v.$touch()
+      if (!this.$v.$invalid) {
+        this.setLoader(true)
+        let payload = {
+          room_id: this.roomId,
+          name: this.name,
+          computer_number: this.computerNumber,
+          address: this.address,
+          subject: this.subject,
+          software: this.software,
+        }
+
+        api.createRoom(payload).then(res => {
+          if (res) {
+            this.handleGetRooms()
+            this.dialogCreate = false
+            this.showMessage('success', 'Tạo mới thành công')
+          }
+        }).catch(error => {
+          let errors = _.get(error.response, 'data.error', {})
+          if (Object.keys(errors).length === 0) {
+            let message = _.get(error.response, 'data.message', '')
+            this.showMessage('error', message)
+          }
+          if (Object.keys(errors).length > 0) {
+            this.serveError.name = _.get(errors, 'name[0]', '')
+            this.serveError.roomId = _.get(errors, 'room_id[0]', '')
+            this.serveError.subject = _.get(errors, 'subject[0]', '')
+            this.serveError.computerNumber = _.get(errors, 'computer_number[0]', '')
+            this.serveError.address = _.get(errors, 'address[0]', '')
+          }
+
+        }).finally(() => this.setLoader(false))
+      }
+    },
+    handleUpdateRoom() {
+      this.$v.$touch()
+      if (!this.$v.$invalid) {
+        this.setLoader(true)
+
+        let payload = {
+          room_id: this.roomId,
+          name: this.name,
+          computer_number: this.computerNumber,
+          address: this.address,
+          subject: this.subject,
+          software: this.software,
+          is_active: this.isActive
+        }
+
+        api.updateRoom(payload, this.selectId).then(() => {
+          this.handleGetRooms()
+          this.dialogUpdate = false
+          this.showMessage('success', 'Cập nhật thành công')
+        }).catch(error => {
+          let errors = _.get(error.response, 'data.error', {})
+          if (Object.keys(errors).length === 0) {
+            let message = _.get(error.response, 'data.message', '')
+            this.showMessage('error', message)
+          }
+          if (Object.keys(errors).length > 0) {
+            this.serveError.name = _.get(errors, 'name[0]', '')
+            this.serveError.roomId = _.get(errors, 'room_id[0]', '')
+            this.serveError.subject = _.get(errors, 'subject[0]', '')
+            this.serveError.computerNumber = _.get(errors, 'computer_number[0]', '')
+            this.serveError.address = _.get(errors, 'address[0]', '')
+          }
+        }).finally(() => this.setLoader(false))
+      }
+    },
+    handleDeleteRoom() {
+      this.setLoader(true)
+      api.deleteRoom(this.selectId).then(() => {
+        this.handleGetRooms()
+        this.dialogDelete = false
+        this.showMessage('success', 'Xóa thành công')
+      }).catch(error => {
+        let errors = _.get(error.response, 'data.error', {})
+        if (Object.keys(errors).length === 0) {
+          let message = _.get(error.response, 'data.message', '')
+          this.showMessage('error', message)
+        }
+      }).finally(() => this.setLoader(false))
     },
   },
   mounted() {
     this.changeTitle('Quản lý phòng máy')
     this.setActiveMenu(4)
+    this.getListSubject()
+    this.handleGetRooms()
   },
   watch: {
     name(value) {
@@ -414,6 +787,7 @@ export default {
   padding-left: 0px;
   padding-top: 0px;
 }
+
 .roomStatus {
   color: #EF5350;
 }

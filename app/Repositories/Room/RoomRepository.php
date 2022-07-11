@@ -33,7 +33,7 @@ class RoomRepository extends BaseRepository implements RoomRepositoryInterface
         $payload['name'] = ucfirst($payload['name']);
         $payload['address'] = ucfirst($payload['address']);
         $payload['software'] = ucfirst($payload['software']);
-        $payload['subjects'] = implode(",", $payload['subjects']);
+        $payload['subject'] = implode(",", $payload['subject']);
         return $payload;
     }
 }
