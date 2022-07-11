@@ -579,7 +579,7 @@ export default {
         },
         changePage(page) {
             this.page.currentPage = page
-            this.getFaculties()
+            this.handleGetFaculties()
         },
         resetForm() {
             this.facultyId = ''

@@ -14,6 +14,7 @@ class Subject extends Model
         'user_create_id',
         'user_update_id',
     ];
+
     public function department()
     {
         return $this->belongsTo(Department::class);
@@ -22,5 +23,14 @@ class Subject extends Model
     public function schedule()
     {
         return $this->hasMany(Schedule::class);
+    }
+
+    public function scopeSearch($query, $search)
+    {
+        if ($search) {
+            $query->where('name', 'like', '%' . $search . '%')
+                ->orWhere('subject_id', 'like', '%' . $search . '%');
+        }
+        return $query;
     }
 }

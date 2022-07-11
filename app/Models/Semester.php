@@ -36,4 +36,21 @@ class Semester extends Model
         }
         return $query;
     }
+
+    public function scopeFilterSemester($query, $semester)
+    {
+
+        if ($semester) {
+            $query->where('semester', $semester);
+        }
+        return $query;
+    }
+
+    public function scopeFilterSchoolYear($query, $schoolYear)
+    {
+        if ($schoolYear) {
+            $query->where('school_year', $schoolYear);
+        }
+        return $query;
+    }
 }

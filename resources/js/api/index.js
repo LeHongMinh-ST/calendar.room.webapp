@@ -164,5 +164,33 @@ export default {
             url: `/semester/${id}/weeks`,
             params: params
         })
-    }
+    },
+    //subject
+    getSubject(params = null) {
+        return apiAxios({
+            method: 'get',
+            url: '/subject',
+            params: params
+        })
+    },
+    createSubject(data) {
+        return apiAxios({
+            method: 'post',
+            url: '/subject',
+            data: data
+        })
+    },
+    updateSubject(data, id) {
+        return apiAxios({
+            method: 'put',
+            url: `/subject/${id}`,
+            data: data
+        })
+    },
+    deleteSubject(id) {
+        return apiAxios({
+            method: 'delete',
+            url: `/subject/${id}`,
+        })
+    },
 }

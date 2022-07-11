@@ -37,6 +37,25 @@
               </v-icon>
               Tìm kiếm
             </v-btn>
+            <v-badge
+                :content="badgeFilter"
+                :value="badgeFilter"
+                color="red"
+                overlap
+            >
+              <v-btn
+                  large
+                  dark
+                  outlined
+                  :color="showFilter ? 'red': 'primary'"
+                  @click="toggleFilter"
+              >
+                <v-icon left>
+                  {{ showFilter ? icon.mdiFilterRemove : icon.mdiFilter }}
+                </v-icon>
+                {{ showFilter ? 'Đóng bộ lọc' : 'Bộ lọc' }}
+              </v-btn>
+            </v-badge>
           </div>
           <div class="col-md-4 text-end">
             <v-btn
@@ -50,6 +69,59 @@
                 {{ icon.mdiPlus }}
               </v-icon>
               Thêm mới
+            </v-btn>
+          </div>
+        </div>
+        <div v-if="showFilter" class="row mt-3">
+          <h5 class="font-weight-bold">Bộ lọc:</h5>
+          <div class="col-md-4">
+            <label><span class="font-weight-bold">Năm học:</span></label>
+            <v-autocomplete
+                :items="schoolYearArrayFilter"
+                item-text="name"
+                item-value="value"
+                dense
+                v-model="filter.schoolYear"
+                class="mt-2"
+                placeholder="Chọn học năm học"
+                outlined
+            ></v-autocomplete>
+          </div>
+          <div class="col-md-4">
+            <label><span class="font-weight-bold">Học kỳ:</span></label>
+            <v-select
+                :items="semesterArrFilter"
+                item-text="name"
+                item-value="value"
+                v-model="filter.semester"
+                dense
+                outlined
+                placeholder="Chọn học kỳ"
+                class="mt-2"
+            ></v-select>
+          </div>
+          <div class="col-md-4">
+            <v-btn
+                class="mt-7"
+                dark
+                color="primary"
+                @click="handleGetSemester"
+            >
+              <v-icon left>
+                {{ icon.mdiFilterOutline }}
+              </v-icon>
+              Lọc dữ liệu
+            </v-btn>
+            <v-btn
+                class="mt-7"
+                dark
+                color="red"
+                @click="resetFilter"
+            >
+              <v-icon left>
+                {{ icon.mdiRefresh }}
+              </v-icon>
+              Đặt lại
             </v-btn>
           </div>
         </div>
@@ -204,7 +276,7 @@
                 :error-messages="semesterErrors"
                 @input="$v.semester.$touch()"
                 @blur="$v.semester.$touch()"
-                placeholder="Chọn họ kỳ"
+                placeholder="Chọn học kỳ"
                 class="mt-2"
             ></v-select>
             <label><span class="font-weight-bold">Số tuần <span class="required">*</span>:</span></label>
@@ -305,7 +377,7 @@
                 :error-messages="semesterErrors"
                 @input="$v.semester.$touch()"
                 @blur="$v.semester.$touch()"
-                placeholder="Chọn họ kỳ"
+                placeholder="Chọn học kỳ"
                 class="mt-2"
             ></v-select>
             <label><span class="font-weight-bold">Số tuần <span class="required">*</span>:</span></label>
@@ -473,7 +545,18 @@
 
 <script>
 import {mapMutations} from "vuex"
-import {mdiMagnify, mdiMenu, mdiPencilBoxOutline, mdiPlus, mdiTrashCanOutline, mdiViewListOutline} from "@mdi/js"
+import {
+  mdiMagnify,
+  mdiFilter,
+  mdiMenu,
+  mdiPencilBoxOutline,
+  mdiPlus,
+  mdiTrashCanOutline,
+  mdiViewListOutline,
+  mdiFilterRemove,
+  mdiFilterOutline,
+  mdiRefresh
+} from "@mdi/js"
 import _ from "lodash"
 import {required} from "vuelidate/lib/validators"
 import moment from "moment";
@@ -484,10 +567,18 @@ export default {
   name: "Semester",
   components: {Week},
   data: () => ({
+    filter: {
+      semester: "",
+      schoolYear: ""
+    },
     menuPicker: false,
     menuPickerUpdate: false,
     dateFormatted: "",
     icon: {
+      mdiRefresh,
+      mdiFilterOutline,
+      mdiFilterRemove,
+      mdiFilter,
       mdiMagnify,
       mdiPlus,
       mdiPencilBoxOutline,
@@ -538,7 +629,8 @@ export default {
     limitYear: {
       max: "",
       min: ""
-    }
+    },
+    showFilter: false
   }),
   validations: {
     numberWeek: {
@@ -600,7 +692,36 @@ export default {
       }
       return schoolYears.reverse()
     },
+    schoolYearArrayFilter() {
+      let now = moment().format('YYYY')
+      let schoolYears = []
 
+      for (let startYear = 2005; startYear <= parseInt(now); startYear++) {
+        let schoolYear = `${startYear} - ${startYear + +1}`
+        schoolYears.push({
+          name: schoolYear,
+          value: schoolYear
+        })
+      }
+
+      schoolYears.push({
+        name: "Tất cả",
+        value: ""
+      })
+      return schoolYears.reverse()
+    },
+    semesterArrFilter() {
+      return [
+        {name: "Tất cả", value: ""},
+        {name: "1", value: "1"},
+        {name: "2", value: "2"},
+        {name: "3", value: "3"},
+      ]
+    },
+    badgeFilter() {
+      let filter = Object.values(this.filter).filter(item => item !== "")
+      return filter.length
+    }
   },
   methods: {
     ...mapMutations('home', [
@@ -675,6 +796,14 @@ export default {
 
       if (this.search) {
         payload.q = this.search
+      }
+
+      if (this.filter.semester) {
+        payload.semester = this.filter.semester
+      }
+
+      if (this.filter.schoolYear) {
+        payload.schoolYear = this.filter.schoolYear
       }
 
       payload.page = this.page.currentPage
@@ -773,6 +902,14 @@ export default {
       }
 
       setTimeout(() => this.snackbar.isShow = false, 2000)
+    },
+    toggleFilter() {
+      this.showFilter = !this.showFilter
+    },
+    resetFilter() {
+      this.filter.semester = ""
+      this.filter.schoolYear = ""
+      this.handleGetSemester()
     }
   },
   mounted() {
@@ -801,7 +938,8 @@ export default {
     },
     numberWeek(value) {
       if (value) this.serveError.numberWeek = ""
-    }
+    },
+
   }
 }
 </script>

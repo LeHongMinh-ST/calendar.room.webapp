@@ -11,6 +11,26 @@ class SemesterRepository extends BaseRepository implements SemesterRepositoryInt
     {
         parent::__construct($model);
     }
+    public function getFilters(array $filters, array $relations = [])
+    {
+        $this->model = $this->originalModel;
+        $paginate = config('constants.limit_of_paginate', 10);
+        $orderBy = $filters['order_by'] ?? 'created_at';
+        $order = $filters['order'] ?? 'desc';
+        $search = $filters['q'] ?? '';
+        $semester = $filters['semester'] ?? "";
+        $schoolYear = $filters['schoolYear'] ?? "";
+        $paginate = (int)($filters['per_page'] ?? $paginate);
+
+        return $this->model
+            ->search($search)
+            ->filterSchoolYear($schoolYear)
+            ->filterSemester($semester)
+            ->orderBy($orderBy, $order)
+            ->with($relations)
+            ->paginate($paginate);
+    }
+
 
     public function create(array $payload)
     {
