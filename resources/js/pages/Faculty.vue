@@ -630,7 +630,17 @@ export default {
         this.changeTitle('Quản lý khoa - bộ môn')
         this.setActiveMenu(1)
         this.handleGetFaculties()
-    }
+    },
+  watch: {
+    name(value) {
+      if (value) this.serveError.name = ""
+
+    },
+    facultyId(value) {
+      if (value) this.serveError.facultyId = ""
+    },
+
+  }
 }
 </script>
 

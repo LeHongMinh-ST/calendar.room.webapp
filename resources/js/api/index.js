@@ -102,12 +102,19 @@ export default {
     },
 
     //department
-    getDepartmentByFaculty(facultyId){
+    getDepartmentByFaculty(facultyId) {
         return apiAxios({
             method: 'get',
             url: `/department/get-by-faculty/${facultyId}`,
         })
     },
+    getListDepartment() {
+        return apiAxios({
+            method: 'get',
+            url: `/department/list`,
+        })
+    },
+
     createDepartment(data) {
         return apiAxios({
             method: 'post',

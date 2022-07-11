@@ -29,6 +29,11 @@ class DepartmentController extends Controller
         return $this->responseSuccess(['departments' => $departments]);
     }
 
+    public function getListDepartment(): JsonResponse
+    {
+        $departments = $this->departmentRepository->all();
+        return $this->responseSuccess(['departments' => $departments]);
+    }
 
     public function getListByFacultyId($facultyId): JsonResponse
     {

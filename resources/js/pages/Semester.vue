@@ -85,7 +85,7 @@
                 class="mt-2"
                 placeholder="Chọn học năm học"
                 outlined
-            ></v-autocomplete>
+            />
           </div>
           <div class="col-md-4">
             <label><span class="font-weight-bold">Học kỳ:</span></label>
@@ -98,7 +98,7 @@
                 outlined
                 placeholder="Chọn học kỳ"
                 class="mt-2"
-            ></v-select>
+            />
           </div>
           <div class="col-md-4">
             <v-btn
@@ -135,19 +135,19 @@
             <th class="text-center" width="10%">
               STT
             </th>
-            <th class="text-left" width="15%">
+            <th class="text-center" width="15%">
               Năm học
             </th>
-            <th class="text-left">
+            <th class="text-center">
               Học Kỳ
             </th>
             <th class="text-center" width="15%">
               Số tuần
             </th>
-            <th class="text-left">
+            <th class="text-center">
               Ngày bắt đầu học kỳ
             </th>
-            <th class="text-left">
+            <th class="text-center">
               Ngày kết thúc học kỳ
             </th>
 
@@ -163,19 +163,19 @@
                 :key="index"
             >
               <td class="text-center">{{ index + +1 + +page.perPage * (page.currentPage - 1) }}</td>
-              <td>
+              <td class="text-center">
                 {{ getValue(item, 'school_year', '') }}
               </td>
-              <td>
+              <td class="text-center">
                 {{ getValue(item, 'semester', '') }}
               </td>
               <td class="text-center">
                 {{ getValue(item, 'number_weeks', '') }}
               </td>
-              <td>
+              <td class="text-center">
                 {{ formatDate(getValue(item, 'semester_start_date', '')) }}
               </td>
-              <td>
+              <td class="text-center">
                 {{ formatDate(getValue(item, 'semester_end_date', '')) }}
               </td>
               <td class="text-center">

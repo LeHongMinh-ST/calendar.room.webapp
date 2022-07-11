@@ -11,6 +11,7 @@ class Subject extends Model
         'subject_id',
         'department_id',
         'name',
+        'is_active',
         'user_create_id',
         'user_update_id',
     ];

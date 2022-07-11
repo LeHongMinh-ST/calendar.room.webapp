@@ -21,8 +21,8 @@
                 outlined
                 placeholder="Nhập từ khóa để tìm kiếm..."
                 clearable
-                @click:clear=""
-                @keydown.enter.native=""
+                @click:clear="handleClearSearch"
+                @keydown.enter.native="handleGetSubjects"
             />
           </div>
           <div class="col-md-4">
@@ -30,7 +30,7 @@
                 large
                 dark
                 color="primary"
-                @click=""
+                @click="handleGetSubjects"
             >
               <v-icon left>
                 {{ icon.mdiMagnify }}
@@ -88,10 +88,13 @@
             >
               <td class="text-center">{{ index + +1 + +page.perPage * (page.currentPage - 1) }}</td>
               <td>
-                {{ getValue(item, 'faculty_id', '') }}
+                {{ getValue(item, 'subject_id', '') }}
               </td>
               <td>
-
+                {{ getValue(item, 'name', '') }}
+              </td>
+              <td>
+                {{ getValue(item, 'department.name', 'Đang cập nhật') }}
               </td>
               <td class="text-center">
                     <span
@@ -112,14 +115,6 @@
                     </v-icon>
                   </template>
                   <v-list>
-                    <v-list-item @click="openDialogShow(item)">
-                      <v-list-item-title>
-                        <v-icon>
-                          {{ icon.mdiViewListOutline }}
-                        </v-icon>
-                        Xem thông tin
-                      </v-list-item-title>
-                    </v-list-item>
                     <v-list-item @click="openDialogUpdate(item)">
                       <v-list-item-title>
                         <v-icon>
@@ -153,7 +148,202 @@
         </template>
       </v-simple-table>
     </v-card>
+    <v-row justify="center">
+      <v-col cols="8">
+        <v-container class="max-width">
+          <v-pagination
+              @input="changePage"
+              v-model="page.currentPage"
+              class="my-4"
+              :length="page.total"
+              :total-visible="10"
+          ></v-pagination>
+        </v-container>
+      </v-col>
+    </v-row>
+    <div class="text-center">
+      <v-dialog
+          v-model="dialogCreate"
+          width="500"
+      >
+        <v-card>
+          <v-card-title class="text-h5 lighten-2">
+            Thêm mới môn học
+          </v-card-title>
 
+          <v-card-text>
+            <label><span class="font-weight-bold">Mã môn học <span class="required">*</span>:</span></label>
+            <v-text-field
+                v-model="subjectId"
+                :error-messages="subjectIdErrors"
+                outlined
+                dense
+                color="blue"
+                class="mt-2"
+                @input="$v.subjectId.$touch()"
+                @blur="$v.subjectId.$touch()"
+            />
+            <label><span class="font-weight-bold">Tên môn học<span class="required">*</span>:</span></label>
+            <v-text-field
+                v-model="name"
+                :error-messages="nameErrors"
+                outlined
+                dense
+                color="blue"
+                class="mt-2"
+                @input="$v.name.$touch()"
+                @blur="$v.name.$touch()"
+            />
+
+            <label><span class="font-weight-bold">Bộ môn<span class="required">*</span>:</span></label>
+            <v-autocomplete
+                :items="departments"
+                item-text="name"
+                item-value="id"
+                :error-messages="departmentIdErrors"
+                dense
+                v-model="departmentId"
+                class="mt-2"
+                placeholder="Chọn bộ môn"
+                outlined
+                @input="$v.departmentId.$touch()"
+                @blur="$v.departmentId.$touch()"
+            />
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+                @click="handleCreateSubject"
+                color="primary"
+            >
+              Thêm mới
+            </v-btn>
+            <v-btn
+                color="red"
+                text
+                @click="dialogCreate = false"
+            >
+              Đóng
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog
+          v-model="dialogUpdate"
+          width="500"
+      >
+        <v-card>
+          <v-card-title class="text-h5 lighten-2">
+            Chỉnh sửa khoa
+          </v-card-title>
+
+          <v-card-text>
+            <label><span class="font-weight-bold">Mã môn học <span class="required">*</span>:</span></label>
+            <v-text-field
+                v-model="subjectId"
+                :error-messages="subjectIdErrors"
+                outlined
+                dense
+                color="blue"
+                class="mt-2"
+                @input="$v.subjectId.$touch()"
+                @blur="$v.subjectId.$touch()"
+            />
+            <label><span class="font-weight-bold">Tên môn học<span class="required">*</span>:</span></label>
+            <v-text-field
+                v-model="name"
+                :error-messages="nameErrors"
+                outlined
+                dense
+                color="blue"
+                class="mt-2"
+                @input="$v.name.$touch()"
+                @blur="$v.name.$touch()"
+            />
+
+            <label><span class="font-weight-bold">Bộ môn<span class="required">*</span>:</span></label>
+            <v-autocomplete
+                :items="departments"
+                item-text="name"
+                item-value="id"
+                :error-messages="departmentIdErrors"
+                dense
+                v-model="departmentId"
+                class="mt-2"
+                placeholder="Chọn bộ môn"
+                outlined
+                @input="$v.departmentId.$touch()"
+                @blur="$v.departmentId.$touch()"
+            />
+            <v-switch
+                v-model="isActive"
+                inset
+                color="success"
+                :label="`${isActive ? 'Hoạt động' : 'Ẩn'}`"
+            ></v-switch>
+
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+                @click="handleUpdateSubject"
+                color="primary"
+            >
+              Lưu
+            </v-btn>
+            <v-btn
+                color="red"
+                text
+                @click="dialogUpdate = false"
+            >
+              Đóng
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog
+          v-model="dialogDelete"
+          width="450"
+      >
+        <v-card>
+          <v-card-title class="text-h5 grey lighten-2">
+            Xoá bản ghi ?
+          </v-card-title>
+
+          <v-card-text>
+            <div class="font-weight-bold">
+              Bạn chắc chắn muốn xoá bản ghi? Dữ liệu không thể phục hồi!
+            </div>
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+                color="#E53935"
+                dark
+                @click="handleDeleteSubject"
+            >
+              Đồng ý
+            </v-btn>
+            <v-btn
+                color="primary"
+                text
+                @click="dialogDelete = false"
+            >
+              Đóng
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
     <v-snackbar
         :value="snackbar.isShow"
         :timeout="2000"
@@ -183,6 +373,7 @@ import {mapMutations} from "vuex";
 import {mdiMagnify, mdiMenu, mdiPencilBoxOutline, mdiPlus, mdiTrashCanOutline, mdiViewListOutline} from "@mdi/js";
 import _ from "lodash";
 import api from "../api";
+import {required} from "vuelidate/lib/validators";
 
 export default {
   name: "Subject",
@@ -227,12 +418,25 @@ export default {
     name: "",
     departmentId: "",
     subjects: [],
+    isActive: false,
     serveError: {
       name: '',
       subjectId: '',
       departmentId: '',
     },
+    departments: []
   }),
+  validations: {
+    name: {
+      required
+    },
+    subjectId: {
+      required
+    },
+    departmentId: {
+      required
+    },
+  },
   computed: {
     nameErrors() {
       const errors = []
@@ -268,6 +472,10 @@ export default {
       'setActiveMenu',
       'setLoader'
     ]),
+    handleClearSearch() {
+      this.search = ""
+      this.handleGetSubjects()
+    },
     getValue(res, data = '', df = undefined) {
       return _.get(res, data, df)
     },
@@ -275,6 +483,11 @@ export default {
       this.name = ""
       this.subjectId = ""
       this.departmentId = ""
+      this.serveError = {
+        name: '',
+        departmentId: '',
+        subjectId: '',
+      }
       this.$v.$reset()
     },
     openDialogCreate() {
@@ -293,7 +506,7 @@ export default {
       payload.page = this.page.currentPage
 
       api.getSubject(payload).then(res => {
-        this.faculties = _.get(res, 'data.data.subjects.data', [])
+        this.subjects = _.get(res, 'data.data.subjects.data', [])
         this.page.currentPage = _.get(res, 'data.data.subjects.current_page', 1)
         this.page.total = _.get(res, 'data.data.subjects.last_page', 0)
         this.page.perPage = _.get(res, 'data.data.subjects.per_page', 0)
@@ -302,15 +515,130 @@ export default {
         this.showMessage('error', 'Không tải được dữ liệu')
       }).finally(() => this.setLoader(false))
     },
+    handleGetListDepartment() {
+      api.getListDepartment().then(res => {
+        this.departments = _.get(res, 'data.data.departments', [])
+      })
+    },
+    handleCreateSubject() {
+      this.$v.$touch()
+      if (!this.$v.$invalid) {
+        this.setLoader(true)
+        let payload = {
+          subject_id: this.subjectId,
+          name: this.name,
+          department_id: this.departmentId,
+        }
+
+        api.createSubject(payload).then(res => {
+          if (res) {
+            this.handleGetSubjects()
+            this.dialogCreate = false
+            this.showMessage('success', 'Tạo mới thành công')
+          }
+        }).catch(error => {
+          let errors = _.get(error.response, 'data.error', {})
+          if (Object.keys(errors).length === 0) {
+            let message = _.get(error.response, 'data.message', '')
+            this.showMessage('error', message)
+          }
+          if (Object.keys(errors).length > 0) {
+            this.serveError.name = _.get(errors, 'name[0]', '')
+            this.serveError.subjectId = _.get(errors, 'subject_id[0]', '')
+            this.serveError.departmentId = _.get(errors, 'department_id[0]', '')
+          }
+
+        }).finally(() => this.setLoader(false))
+      }
+    },
+    handleUpdateSubject() {
+      this.$v.$touch()
+      if (!this.$v.$invalid) {
+        this.setLoader(true)
+
+        let payload = {
+          subject_id: this.subjectId,
+          name: this.name,
+          department_id: this.departmentId,
+          is_active: this.isActive
+        }
+
+        api.updateSubject(payload, this.selectId).then(() => {
+          this.handleGetSubjects()
+          this.dialogUpdate = false
+          this.showMessage('success', 'Cập nhật thành công')
+        }).catch(error => {
+          let errors = _.get(error.response, 'data.error', {})
+          if (Object.keys(errors).length === 0) {
+            let message = _.get(error.response, 'data.message', '')
+            this.showMessage('error', message)
+          }
+          if (Object.keys(errors).length > 0) {
+            this.serveError.name = _.get(errors, 'name[0]', '')
+            this.serveError.subjectId = _.get(errors, 'subject_id[0]', '')
+            this.serveError.departmentId = _.get(errors, 'department_id[0]', '')
+          }
+        }).finally(() => this.setLoader(false))
+      }
+    },
+    handleDeleteSubject() {
+      this.setLoader(true)
+      api.deleteSubject(this.selectId).then(() => {
+        this.handleGetFaculties()
+        this.dialogDelete = false
+        this.showMessage('success', 'Xóa thành công')
+      }).catch(error => {
+        let errors = _.get(error.response, 'data.error', {})
+        if (Object.keys(errors).length === 0) {
+          let message = _.get(error.response, 'data.message', '')
+          this.showMessage('error', message)
+        }
+      }).finally(() => this.setLoader(false))
+    },
     changePage(page) {
       this.page.currentPage = page
       this.handleGetSubjects()
     },
+    openDialogUpdate(item) {
+      this.resetForm()
+      this.name = _.get(item, 'name', '')
+      this.subjectId = _.get(item, 'subject_id', '')
+      this.departmentId = _.get(item, 'department_id', '')
+      this.selectId = _.get(item, 'id', '')
+      this.isActive = _.get(item, 'is_active', '')
+      this.dialogUpdate = true
+    },
+
+    openDialogDelete(item) {
+      this.resetForm()
+      this.selectId = _.get(item, 'id', '')
+      this.dialogDelete = true
+    },
+    showMessage(type, message) {
+      this.snackbar = {
+        message: message,
+        color: type,
+        isShow: true,
+      }
+      setTimeout(() => this.snackbar.isShow = false, 2000)
+    }
   },
   mounted() {
     this.changeTitle('Quản lý môn học')
     this.setActiveMenu(3)
+    this.handleGetListDepartment()
     this.handleGetSubjects()
+  },
+  watch: {
+    name(value) {
+      if (value) this.serveError.name = ""
+    },
+    subjectId(value) {
+      if (value) this.serveError.subjectId = ""
+    },
+    departmentId(value) {
+      if (value) this.serveError.departmentId = ""
+    },
   }
 }
 </script>

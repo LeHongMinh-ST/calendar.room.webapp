@@ -49,6 +49,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::prefix('department')->group(function () {
         Route::get('/', [DepartmentController::class, 'index']);
+        Route::get('/list', [DepartmentController::class, 'getListDepartment']);
         Route::get('/get-by-faculty/{facultyId}', [DepartmentController::class, 'getListByFacultyId']);
         Route::post('/', [DepartmentController::class, 'store']);
         Route::put('/{id}', [DepartmentController::class, 'update']);
@@ -73,6 +74,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::prefix('subject')->group(function () {
         Route::get('/', [SubjectController::class, 'index']);
+        Route::post('/', [SubjectController::class, 'store']);
         Route::get('/{id}', [SubjectController::class, 'show']);
         Route::put('/{id}', [SubjectController::class, 'update']);
         Route::delete('/{id}', [SubjectController::class, 'destroy']);
