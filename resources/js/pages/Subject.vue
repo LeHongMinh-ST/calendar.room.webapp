@@ -152,6 +152,9 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.breadcrumbWrapper {
+  padding-left: 0px;
+  padding-top: 0px;
+}
 </style>
