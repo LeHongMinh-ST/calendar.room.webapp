@@ -200,4 +200,32 @@ export default {
             url: `/subject/${id}`,
         })
     },
+    //room
+    getRoom(params = null) {
+        return apiAxios({
+            method: 'get',
+            url: '/room',
+            params: params
+        })
+    },
+    createRoom(data) {
+        return apiAxios({
+            method: 'post',
+            url: '/room',
+            data: data
+        })
+    },
+    updateRoom(data, id) {
+        return apiAxios({
+            method: 'put',
+            url: `/room/${id}`,
+            data: data
+        })
+    },
+    deleteRoom(id) {
+        return apiAxios({
+            method: 'delete',
+            url: `/room/${id}`,
+        })
+    },
 }

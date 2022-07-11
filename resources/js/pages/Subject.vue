@@ -424,7 +424,9 @@ export default {
       subjectId: '',
       departmentId: '',
     },
-    departments: []
+    departments: [],
+    selectId: "",
+
   }),
   validations: {
     name: {
