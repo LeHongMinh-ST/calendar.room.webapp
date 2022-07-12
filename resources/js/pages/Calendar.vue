@@ -108,7 +108,7 @@
       <div class="text-center">
         <v-dialog
             v-model="dialogCreate"
-            width="500"
+            width="75vw"
         >
           <v-card>
             <v-card-title class="text-h5 lighten-2">
@@ -116,28 +116,11 @@
             </v-card-title>
 
             <v-card-text>
-              <label><span class="font-weight-bold">Mã khoa <span class="required">*</span>:</span></label>
-              <v-text-field
-                  v-model="facultyId"
-                  :error-messages="facultyIdErrors"
-                  outlined
-                  dense
-                  color="blue"
-                  class="mt-2"
-                  @input="$v.facultyId.$touch()"
-                  @blur="$v.facultyId.$touch()"
-              />
-              <label><span class="font-weight-bold">Tên khoa<span class="required">*</span>:</span></label>
-              <v-text-field
-                  v-model="name"
-                  :error-messages="nameErrors"
-                  outlined
-                  dense
-                  color="blue"
-                  class="mt-2"
-                  @input="$v.name.$touch()"
-                  @blur="$v.name.$touch()"
-              />
+              <div class="row">
+                <div class="col-4"></div>
+                <div class="col-4"></div>
+                <div class="col-4"></div>
+              </div>
             </v-card-text>
 
             <v-divider></v-divider>
@@ -145,7 +128,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn
-                  @click="handleCreateFaculty"
+                  @click=""
                   color="primary"
               >
                 Thêm mới
@@ -186,7 +169,8 @@ export default {
     roomId: '',
     semesterId: '',
     events: [],
-    dialogCreate: false
+    dialogCreate: false,
+
   }),
   methods: {
     ...mapMutations('home', [
@@ -194,6 +178,9 @@ export default {
       'setActiveMenu',
       'setLoader'
     ]),
+    resetForm(){
+
+    },
     openDialogCreate() {
       this.resetForm()
       this.dialogCreate = true
