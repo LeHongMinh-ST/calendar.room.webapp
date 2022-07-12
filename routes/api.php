@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\SemesterController;
 use App\Http\Controllers\Api\RoomController;
 use App\Http\Controllers\Api\SubjectController;
+use App\Http\Controllers\Api\ScheduleController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -80,6 +81,14 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('/{id}', [SubjectController::class, 'show']);
         Route::put('/{id}', [SubjectController::class, 'update']);
         Route::delete('/{id}', [SubjectController::class, 'destroy']);
+    });
+
+    Route::prefix('schedule')->group(function () {
+        Route::get('/', [ScheduleController::class, 'index']);
+        Route::post('/', [ScheduleController::class, 'store']);
+        Route::get('/{id}', [ScheduleController::class, 'show']);
+        Route::put('/{id}', [ScheduleController::class, 'update']);
+        Route::delete('/{id}', [ScheduleController::class, 'destroy']);
     });
 
 });

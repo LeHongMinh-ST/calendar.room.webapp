@@ -3,6 +3,7 @@
 namespace App\Repositories\Schedule;
 
 use App\Models\Schedule;
+use App\Models\Week;
 use App\Repositories\Base\BaseRepository;
 use Illuminate\Support\Facades\Session;
 
@@ -22,18 +23,4 @@ class ScheduleRepository extends BaseRepository implements ScheduleRepositoryInt
         return parent::create($payload);
     }
 
-    private function checkLesson($lessonStart, $lesson): bool
-    {
-        if ($lessonStart <= 5)
-            return $lesson <= 5 - $lessonStart + 1;
-        else if ($lessonStart <= 10)
-            return $lesson <= 11 - $lessonStart;
-        else
-            return $lesson <= 14 - $lessonStart;
-    }
-
-    private function checkMaxWeekBackend($weekStart): bool
-    {
-        return !($weekStart > Session::get('semester_now')['number_weeks']);
-    }
 }

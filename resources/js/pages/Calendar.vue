@@ -112,7 +112,7 @@
         >
           <v-card>
             <v-card-title class="text-h5 lighten-2">
-              Thêm mới khoa
+              Đăng ký thời khoá biểu
             </v-card-title>
 
             <v-card-text>
@@ -202,7 +202,7 @@ export default {
       return _.get(res, data, df)
     },
     clickTime(event) {
-      console.log(1, event)
+      this.openDialogCreate()
     },
     clickEvent(event) {
       console.log(event)

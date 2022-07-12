@@ -236,4 +236,32 @@ export default {
             url: `/room/${id}`,
         })
     },
+    //schedule
+    getSchedule(params = null) {
+        return apiAxios({
+            method: 'get',
+            url: '/schedule',
+            params: params
+        })
+    },
+    createSchedule(data) {
+        return apiAxios({
+            method: 'post',
+            url: '/schedule',
+            data: data
+        })
+    },
+    updateSchedule(data, id) {
+        return apiAxios({
+            method: 'put',
+            url: `/schedule/${id}`,
+            data: data
+        })
+    },
+    deleteSchedule(id) {
+        return apiAxios({
+            method: 'delete',
+            url: `/schedule/${id}`,
+        })
+    },
 }
