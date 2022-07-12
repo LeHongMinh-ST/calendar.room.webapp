@@ -21,7 +21,7 @@ class StoreDepartmentRequest extends BaseRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'department_id' => 'required|unique:departments',
@@ -29,7 +29,7 @@ class StoreDepartmentRequest extends BaseRequest
         ];
     }
 
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'name' => 'Tên bộ môn',

@@ -232,7 +232,7 @@
                 @input="$v.address.$touch()"
                 @blur="$v.address.$touch()"
             />
-            <label><span class="font-weight-bold">Địa chỉ<span class="required">*</span>:</span></label>
+            <label><span class="font-weight-bold">Môn học<span class="required">*</span>:</span></label>
             <v-autocomplete
                 :items="subjectArray"
                 item-text="name"
@@ -248,7 +248,7 @@
                 multiple
                 chips
             />
-            <label><span class="font-weight-bold">Phần mềm môn học<span class="required">*</span>:</span></label>
+            <label><span class="font-weight-bold">Phần mềm môn học:</span></label>
             <v-text-field
                 v-model="software"
                 outlined
@@ -332,7 +332,7 @@
                 @input="$v.address.$touch()"
                 @blur="$v.address.$touch()"
             />
-            <label><span class="font-weight-bold">Địa chỉ<span class="required">*</span>:</span></label>
+            <label><span class="font-weight-bold">Môn học<span class="required">*</span>:</span></label>
             <v-autocomplete
                 :items="subjectArray"
                 item-text="name"
@@ -348,7 +348,7 @@
                 multiple
                 chips
             />
-            <label><span class="font-weight-bold">Phần mềm môn học<span class="required">*</span>:</span></label>
+            <label><span class="font-weight-bold">Phần mềm môn học:</span></label>
             <v-text-field
                 v-model="software"
                 outlined
