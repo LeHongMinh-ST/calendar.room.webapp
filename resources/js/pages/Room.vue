@@ -386,6 +386,68 @@
         </v-card>
       </v-dialog>
       <v-dialog
+          v-model="dialogShow"
+          width="60%"
+      >
+        <v-card>
+          <v-card-title class="text-h5 lighten-2">
+            Thông tin phòng máy
+          </v-card-title>
+
+          <v-card-text>
+            <div class="row">
+              <div class="col-md-6">
+                <h5>Mã phòng máy: <span class="font-weight-bold">{{ roomId }}</span></h5>
+              </div>
+              <div class="col-md-6">
+                <h5>Trạng thái: <span class="font-weight-bold roomStatus"
+                                      :class="{ roomActive: isActive}">{{
+                    isActive ? 'Hoạt động' : 'Ẩn'
+                  }}</span></h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <h5>Tên phòng máy: <span class="font-weight-bold">{{ name }}</span></h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <h5>Số lượng máy: <span class="font-weight-bold">{{ computerNumber }}</span></h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h5>Địa chỉ: <span class="font-weight-bold">{{ address }}</span></h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h5>Môn học: <span class="font-weight-bold">{{ subject.toString() }}</span></h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <h5>Phần mềm: <span class="font-weight-bold">{{ software }}</span></h5>
+              </div>
+            </div>
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+                color="red"
+                dark
+                @click="dialogShow = false"
+            >
+              Đóng
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog
           v-model="dialogDelete"
           width="450"
       >
@@ -665,6 +727,7 @@ export default {
       this.roomId = _.get(item, 'room_id', '')
       this.computerNumber = _.get(item, 'computer_number', '')
       this.subject = _.get(item, 'subject', '')
+      this.address = _.get(item, 'address', '')
       this.software = _.get(item, 'software', '')
       this.isActive = _.get(item, 'is_active', false)
       this.dialogShow = true

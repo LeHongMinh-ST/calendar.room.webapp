@@ -66,6 +66,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::prefix('room')->group(function () {
         Route::get('/', [RoomController::class, 'index']);
+        Route::get('/list', [RoomController::class, 'getListRoom']);
         Route::post('/', [RoomController::class, 'store']);
         Route::get('/{id}', [RoomController::class, 'show']);
         Route::put('/{id}', [RoomController::class, 'update']);

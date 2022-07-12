@@ -1,7 +1,5 @@
 <template>
     <v-navigation-drawer permanent>
-
-
         <v-list
             nav
         >

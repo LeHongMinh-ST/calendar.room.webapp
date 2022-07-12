@@ -35,10 +35,15 @@ class RoomController extends Controller
         return $this->responseSuccess(['rooms' => $rooms]);
     }
 
+    public function getListRoom(): JsonResponse
+    {
+        $rooms = $this->roomRepository->all();
+        return $this->responseSuccess(['rooms' => $rooms]);
+    }
+
     public function show($id): JsonResponse
     {
         $room = $this->roomRepository->findById($id);
-
         return $this->responseSuccess([
             'room' => $room
         ]);
@@ -76,7 +81,7 @@ class RoomController extends Controller
 
     public function destroy($id): JsonResponse
     {
-        $assigment = $this->assignmentRepository->getFirstBy(['room_id', $id]);
+        $assigment = $this->assignmentRepository->getFirstBy(['room_id' => $id]);
 
         if ($assigment) {
             $message = 'Phòng máy đang được sử dụng!';
