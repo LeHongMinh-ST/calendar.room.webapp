@@ -264,4 +264,11 @@ export default {
             url: `/schedule/${id}`,
         })
     },
+    getWeekNow(params) {
+        return apiAxios({
+            method: 'get',
+            url: '/schedule/get-week-now',
+            params: params
+        })
+    }
 }

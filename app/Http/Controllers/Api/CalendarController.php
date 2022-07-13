@@ -9,18 +9,52 @@ use App\Models\Semester;
 use App\Models\Subject;
 use App\Models\User;
 use App\Models\Week;
+use App\Repositories\Room\RoomRepositoryInterface;
+use App\Repositories\Schedule\ScheduleRepositoryInterface;
+use App\Repositories\Semester\SemesterRepositoryInterface;
+use App\Repositories\Subject\SubjectRepositoryInterface;
+use App\Repositories\User\UserRepositoryInterface;
+use App\Repositories\Week\WeekRepositoryInterface;
 use App\Traits\ResponseTrait;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class CalendarController extends Controller
 {
     use ResponseTrait;
 
+    private $scheduleRepository;
+    private $roomRepository;
+    private $weekRepository;
+    private $subjectRepository;
+    private $userRepository;
+    private $semesterRepository;
+
+    public function __construct(
+        ScheduleRepositoryInterface $scheduleRepository,
+        RoomRepositoryInterface     $roomRepository,
+        WeekRepositoryInterface     $weekRepository,
+        SubjectRepositoryInterface  $subjectRepository,
+        UserRepositoryInterface     $userRepository,
+        SemesterRepositoryInterface $semesterRepository
+    )
+    {
+        $this->scheduleRepository = $scheduleRepository;
+        $this->roomRepository = $roomRepository;
+        $this->weekRepository = $weekRepository;
+        $this->subjectRepository = $subjectRepository;
+        $this->userRepository = $userRepository;
+        $this->semesterRepository = $semesterRepository;
+    }
+
     public function getEventsCalender(Request $request): JsonResponse
     {
-        $semesterId = $request->input('semesterId');
+        $this->handleGetView();
+        $semesterId = Session::get('semesters')['id'];
+
+
         $roomId = $request->input('roomId');
 
         if (!$semesterId) {
@@ -46,14 +80,14 @@ class CalendarController extends Controller
                 'isEventWeek' => true
             ];
         }
-        $subjects = Subject::query()->get();
+        $subjects = $this->subjectRepository->all();
 
 
         foreach ($schedules as $schedule) {
             $arrayWeeks = explode(",", $schedule['week_check']);
             $arrayWeeks = $this->getChildArray($arrayWeeks);
 
-            $teacher = User::query()->where(['user_name' => $schedule['teacher_id']])->first();
+            $teacher = $this->userRepository->getFirstBy(['user_name' => $schedule['teacher_id']]);
             foreach ($arrayWeeks as $arrayWeek) {
                 foreach ($arrayWeek as $week) {
                     //Lấy các thông tin cho lớp học
@@ -94,7 +128,7 @@ class CalendarController extends Controller
     private function getSemesterNow()
     {
         $today = date("Y-m-d");
-        $semesters = Semester::query()->get();
+        $semesters = $this->scheduleRepository->all();
         foreach ($semesters as $semester) {
             if (strtotime($today) >= strtotime($semester->semester_start_date) && strtotime($today) <= strtotime($semester->semester_end_date)) {
                 return $semester;
@@ -133,10 +167,11 @@ class CalendarController extends Controller
 
     public function timeEvent($schedule, $dataWeek): array
     {
-        $week = Week::query()
-            ->where('semester_id', $schedule['semester_id'])
-            ->where('week', $dataWeek)
-            ->first();
+        $week = $this->weekRepository->getFirstBy([
+            'semester_id' => $schedule['semester_id'],
+            'week' => $dataWeek
+        ]);
+
 
         //Lấy ra ngày bắt đầu môn học
         if ($schedule)
@@ -149,5 +184,47 @@ class CalendarController extends Controller
         $datetime['start'] = $date . ' ' . $startTime;
         $datetime['end'] = $date . ' ' . $endTime;
         return $datetime;
+    }
+
+    public function handleGetView()
+    {
+        if (!Session::has('semesters')) {
+            $today = date("Y-m-d");
+            $semesters = $this->semesterRepository->all();
+            foreach ($semesters as $semester) {
+                if (strtotime($today) >= strtotime($semester['semester_start_date']) && strtotime($today) <= strtotime($semester['semester_end_date'])) {
+                    Session::put('semesters', $semester);
+                    Session::put('semester_now', $semester);
+                }
+            }
+        }
+        if (!Session::has('room')) {
+            $room = $this->roomRepository->getFirstBy(['room_id' => 'THCNTT01']);
+            if (!empty($room)) {
+                $room = $room->toArray();
+                Session::put('room', $room);
+            }
+        }
+
+        //Xử lý các thời khóa biểu đã hết hạn xác nhận
+        $schedules = $this->scheduleRepository->allBy(['status' => 0]);
+        foreach ($schedules as $schedule) {
+            $day = $schedule->day - 2;
+
+            $weekDate = $this->weekRepository->getFirstBy([
+                'semester_id' => Session::get('semester_now')['id'],
+                'week' => $schedule->week
+            ]);
+
+            $dateStart = date('Y-m-d', strtotime($weekDate['start_day'] . ' + ' . $day . ' days'));
+            $dateNow = date('Y-m-d');
+
+            if (strtotime($dateStart) < strtotime($dateNow)) {
+                $data['status'] = 2;
+                $this->scheduleRepository->updateById($schedule->id,$data);
+                $this->scheduleRepository->deleteById($schedule->id);
+            }
+        }
+
     }
 }

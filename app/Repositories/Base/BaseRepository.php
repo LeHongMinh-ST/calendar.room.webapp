@@ -56,7 +56,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     public function all(array $columns = ['*'], array $relations = [])
     {
-        return $this->model->with($relations)->get($columns);
+        return $this->model->select($columns)->with($relations)->get();
     }
 
 

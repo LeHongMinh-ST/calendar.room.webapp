@@ -85,6 +85,25 @@ class ScheduleController extends Controller
         return $this->responseSuccess();
     }
 
+    public function getWeekNow(Request $request): JsonResponse
+    {
+        $semester = Session::get('semester_now');
+        if (!$semester) {
+            return $this->responseError('Không có học kỳ nào đang diễn ra');
+        }
+        $weeks = $this->weekRepository->getBySemesterId($semester['id']);
+
+        foreach ($weeks as $week) {
+            if (strtotime($week->start_day) <= strtotime($request->get('date')) && strtotime($week->end_day) >= strtotime($request->get('date'))) {
+                return $this->responseSuccess([
+                    'week' => $week->week
+                ]);
+            }
+        }
+
+        return $this->responseError('Tuần học không nằm trong học kì hiện tại!');
+    }
+
     private function checkLesson($lessonStart, $lesson): bool
     {
         if ($lessonStart <= 5)

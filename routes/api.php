@@ -85,6 +85,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::prefix('schedule')->group(function () {
         Route::get('/', [ScheduleController::class, 'index']);
+        Route::get('/get-week-now', [ScheduleController::class, 'getWeekNow']);
         Route::post('/', [ScheduleController::class, 'store']);
         Route::get('/{id}', [ScheduleController::class, 'show']);
         Route::put('/{id}', [ScheduleController::class, 'update']);

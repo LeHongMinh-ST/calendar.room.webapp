@@ -117,7 +117,9 @@
 
             <v-card-text>
               <div class="row">
-                <div class="col-4"></div>
+                <div class="col-4">
+
+                </div>
                 <div class="col-4"></div>
                 <div class="col-4"></div>
               </div>
@@ -143,8 +145,27 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-
       </div>
+      <v-snackbar
+          :value="snackbar.isShow"
+          :timeout="2000"
+          absolute
+          top
+          :color="snackbar.color"
+          right
+      >
+        {{ snackbar.message }}
+        <template v-slot:action="{ attrs }">
+          <v-btn
+              color="white"
+              text
+              v-bind="attrs"
+              @click="snackbar.isShow = false"
+          >
+            X
+          </v-btn>
+        </template>
+      </v-snackbar>
     </div>
   </v-container>
 
@@ -170,7 +191,11 @@ export default {
     semesterId: '',
     events: [],
     dialogCreate: false,
-
+    snackbar: {
+      isShow: false,
+      color: 'success',
+      message: '',
+    },
   }),
   methods: {
     ...mapMutations('home', [
@@ -189,7 +214,16 @@ export default {
       return _.get(res, data, df)
     },
     clickTime(event) {
-      this.openDialogCreate()
+      api.getWeekNow({date: event.date}).then(res => {
+        this.openDialogCreate()
+
+      }).catch(error => {
+        let errors = _.get(error, 'response.data.error', {})
+        if (Object.keys(errors).length === 0) {
+          let message = _.get(error, 'response.data.message', '')
+          this.showMessage('error', message)
+        }
+      })
     },
     clickEvent(event) {
       console.log(event)
@@ -221,7 +255,15 @@ export default {
         }
         this.setLoader(false)
       })
-    }
+    },
+    showMessage(type, message) {
+      this.snackbar = {
+        message: message,
+        color: type,
+        isShow: true,
+      }
+      setTimeout(() => this.snackbar.isShow = false, 2000)
+    },
   },
   mounted() {
     this.setTitleCalendar(this.$refs.calendar.title)
